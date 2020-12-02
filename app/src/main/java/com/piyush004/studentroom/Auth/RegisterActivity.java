@@ -15,8 +15,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
-import com.piyush004.studentroom.Dashboard.HomeActivity;
-import com.piyush004.studentroom.MainActivity;
 import com.piyush004.studentroom.R;
 
 import java.util.regex.Matcher;
@@ -84,13 +82,13 @@ public class RegisterActivity extends AppCompatActivity {
                             if (!task.isSuccessful()) {
 
                                 Toast.makeText(RegisterActivity.this.getApplicationContext(),
-                                        "SignUp unsuccessful: " + task.getException().getMessage(),
+                                        "Registration Error " + task.getException().getMessage(),
                                         Toast.LENGTH_SHORT).show();
                                 progressBar.setVisibility(View.GONE);
                             } else {
-                                Toast.makeText(RegisterActivity.this, "Register Successfully...", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RegisterActivity.this, "Successfully registered", Toast.LENGTH_SHORT).show();
                                 progressBar.setVisibility(View.GONE);
-                                startActivity(new Intent(RegisterActivity.this, HomeActivity.class));
+                                startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
                             }
                         }
                     });
