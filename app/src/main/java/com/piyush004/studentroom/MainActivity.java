@@ -7,7 +7,7 @@ import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.piyush004.studentroom.Dashboard.HomeActivity;
+import com.piyush004.studentroom.Auth.LoginActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
 
-                Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();
 

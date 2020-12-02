@@ -19,6 +19,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +69,7 @@ public class HomeActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.action_profile:
+
                 Toast.makeText(this, "You clicked Profile", Toast.LENGTH_SHORT).show();
                 break;
 
