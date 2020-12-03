@@ -5,17 +5,25 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.piyush004.studentroom.Auth.LoginActivity;
 import com.piyush004.studentroom.R;
 
@@ -23,7 +31,9 @@ public class HomeActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private FirebaseAuth firebaseAuth;
-
+    private EditText name, pass;
+    private FloatingActionButton buttonCreateRoom;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +42,12 @@ public class HomeActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
         toolbar = findViewById(R.id.toolbar);
+        buttonCreateRoom = findViewById(R.id.buttonCreateRoom);
+        recyclerView = (RecyclerView) findViewById(R.id.RecycleViewHome);
+
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         toolbar.setTitle("Home");
         setSupportActionBar(toolbar);
 
@@ -40,13 +56,52 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(new Intent(this, LoginActivity.class));
         }
 
-       /* System.out.println("UID "+firebaseAuth.getCurrentUser().getUid());
-        System.out.println("email "+firebaseAuth.getCurrentUser().getEmail());
-        System.out.println("disname "+firebaseAuth.getCurrentUser().getDisplayName());
-        System.out.println("tokent "+firebaseAuth.getCurrentUser().getIdToken(true).toString());
-        System.out.println("tokenf " +firebaseAuth.getCurrentUser().getIdToken(false).toString());
-        System.out.println("phone "+firebaseAuth.getCurrentUser().getPhoneNumber());
-        System.out.println("pid "+firebaseAuth.getCurrentUser().getProviderId());*/
+        final DatabaseReference df = FirebaseDatabase.getInstance().getReference().child("Room");
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        buttonCreateRoom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LayoutInflater inflater = getLayoutInflater();
+                View dialogLayout = inflater.inflate(R.layout.create_room_dialog, null);
+                name = dialogLayout.findViewById(R.id.editTextRoomId);
+                pass = dialogLayout.findViewById(R.id.editTextRoomPassword);
+                builder.setTitle("Create Room");
+                builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        String sname = name.getText().toString();
+                        String spass = pass.getText().toString();
+
+                        if (sname.isEmpty()) {
+                            name.setError("Please Enter Name");
+                            name.requestFocus();
+                        } else if (spass.isEmpty()) {
+                            pass.setError("Please Enter Password");
+                            pass.requestFocus();
+                        } else if (!(sname.isEmpty() && spass.isEmpty())) {
+                            String key = df.push().getKey();
+                            df.child(key).child("RoomName").setValue(sname);
+                            df.child(key).child("RoomPass").setValue(spass);
+                            Toast.makeText(getApplicationContext(), "Room Created...", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+                builder.setNegativeButton("Closed", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+                builder.setView(dialogLayout);
+                builder.show();
+            }
+        });
+
+
     }
 
     @Override
@@ -61,7 +116,7 @@ public class HomeActivity extends AppCompatActivity {
 
         final SearchView searchView = (SearchView) searchViewItem.getActionView();
 
-        searchView.setQueryHint("Search Classes...");
+        searchView.setQueryHint("Search Rooms...");
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
         searchView.setIconifiedByDefault(true);
@@ -86,11 +141,6 @@ public class HomeActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.action_profile:
-
-                Toast.makeText(this, "You clicked Profile", Toast.LENGTH_SHORT).show();
-                break;
-
             case R.id.action_logout:
 
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
