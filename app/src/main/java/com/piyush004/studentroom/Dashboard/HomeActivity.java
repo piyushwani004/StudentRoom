@@ -11,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -40,8 +41,10 @@ public class HomeActivity extends AppCompatActivity {
     private EditText name, pass;
     private FloatingActionButton buttonCreateRoom;
     private RecyclerView recyclerView;
+    public Holder holder;
     private FirebaseRecyclerOptions<Model> options;
     private FirebaseRecyclerAdapter<Model, Holder> adapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,13 +114,14 @@ public class HomeActivity extends AppCompatActivity {
 
 
         options = new FirebaseRecyclerOptions.Builder<Model>().setQuery(df, new SnapshotParser<Model>() {
+
             @NonNull
             @Override
             public Model parseSnapshot(@NonNull DataSnapshot snapshot) {
                 return new Model(
 
-                        snapshot.child("RoomName").getValue().toString()
-
+                        snapshot.child("RoomName").getValue().toString(),
+                        snapshot.child("RoomPass").getValue().toString()
                 );
 
             }
@@ -132,6 +136,7 @@ public class HomeActivity extends AppCompatActivity {
                 holder.textViewTitle.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        Toast.makeText(HomeActivity.this, "Click Room ID" + model.getName() + " :: " + model.getPassword(), Toast.LENGTH_SHORT).show();
 
                     }
                 });
@@ -165,6 +170,7 @@ public class HomeActivity extends AppCompatActivity {
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 
         final SearchView searchView = (SearchView) searchViewItem.getActionView();
+        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
 
         searchView.setQueryHint("Search Rooms...");
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
@@ -174,12 +180,15 @@ public class HomeActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                //do the search here
+
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
+
+                //holder.getFilter().filter(newText);
+                System.out.println(newText);
                 return false;
             }
         });
@@ -224,11 +233,14 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        adapter.startListening();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        adapter.stopListening();
     }
+
 
 }
