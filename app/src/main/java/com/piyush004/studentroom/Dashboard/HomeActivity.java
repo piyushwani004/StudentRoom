@@ -10,18 +10,26 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.firebase.ui.database.SnapshotParser;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.piyush004.studentroom.Auth.LoginActivity;
@@ -34,6 +42,8 @@ public class HomeActivity extends AppCompatActivity {
     private EditText name, pass;
     private FloatingActionButton buttonCreateRoom;
     private RecyclerView recyclerView;
+    private FirebaseRecyclerOptions<Model> options;
+    private FirebaseRecyclerAdapter<Model, Holder> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +110,48 @@ public class HomeActivity extends AppCompatActivity {
                 builder.show();
             }
         });
+
+
+        options = new FirebaseRecyclerOptions.Builder<Model>().setQuery(df, new SnapshotParser<Model>() {
+            @NonNull
+            @Override
+            public Model parseSnapshot(@NonNull DataSnapshot snapshot) {
+                return new Model(
+
+                        snapshot.child("RoomName").getValue().toString()
+
+                );
+
+            }
+        }).build();
+        adapter = new FirebaseRecyclerAdapter<Model, Holder>(options) {
+
+            @Override
+            protected void onBindViewHolder(@NonNull Holder holder, int position, @NonNull final Model model) {
+
+                holder.setTxtTitle(model.getName());
+
+                holder.textViewTitle.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+
+            }
+
+            @NonNull
+            @Override
+            public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.room_card, parent, false);
+
+                return new Holder(view);
+            }
+        };
+
+        adapter.startListening();
+        recyclerView.setAdapter(adapter);
 
 
     }
