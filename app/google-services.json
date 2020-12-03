@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "525905232686",
+    "firebase_url": "https://studentroom-64b05.firebaseio.com",
+    "project_id": "studentroom-64b05",
+    "storage_bucket": "studentroom-64b05.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:525905232686:android:dad4efff80f32236e5b0bf",
+        "android_client_info": {
+          "package_name": "com.piyush004.studentroom"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "525905232686-pffq45ruq740r3r2ibm1fjphdhjqdin1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVqdKvvjpFxV-PJqVADkYDijx86YlqsEQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "525905232686-pffq45ruq740r3r2ibm1fjphdhjqdin1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
