@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -33,6 +34,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.piyush004.studentroom.Auth.LoginActivity;
 import com.piyush004.studentroom.R;
+import com.piyush004.studentroom.Room.RoomActivity;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -59,7 +61,7 @@ public class HomeActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        toolbar.setTitle("Home");
+        toolbar.setTitle(firebaseAuth.getCurrentUser().getEmail());
         setSupportActionBar(toolbar);
 
         if (firebaseAuth.getCurrentUser() == null) {
@@ -136,7 +138,47 @@ public class HomeActivity extends AppCompatActivity {
                 holder.textViewTitle.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(HomeActivity.this, "Click Room ID" + model.getName() + " :: " + model.getPassword(), Toast.LENGTH_SHORT).show();
+
+                        final String roompassword = model.getPassword();
+
+                        LayoutInflater inflater = getLayoutInflater();
+                        View dialogLayout = inflater.inflate(R.layout.room_password_dialog, null);
+                        final TextView roomName_d = dialogLayout.findViewById(R.id.textViewRoomId_d);
+                        final EditText roomPassword_d = dialogLayout.findViewById(R.id.editTextRoomPassword_d);
+
+                        roomName_d.setText(model.getName());
+                        builder.setTitle("Authentication");
+                        builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                                String dPass = roomPassword_d.getText().toString();
+
+                                if (dPass.isEmpty()) {
+                                    roomName_d.setError("Please Enter Password");
+                                    roomName_d.requestFocus();
+                                } else if (!(dPass.isEmpty())) {
+                                    if (dPass.equals(roompassword)) {
+                                        Toast.makeText(getApplicationContext(), "Password Match", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(HomeActivity.this, RoomActivity.class);
+                                        intent.putExtra("RoomID" , model.getName());
+                                        startActivity(intent);
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "Password Doed Not Match", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }
+                        });
+
+                        builder.setNegativeButton("Closed", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        });
+
+                        builder.setView(dialogLayout);
+                        builder.show();
 
                     }
                 });
