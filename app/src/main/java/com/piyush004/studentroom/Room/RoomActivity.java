@@ -9,6 +9,9 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.piyush004.studentroom.R;
+import com.piyush004.studentroom.Room.storage.RoomStorageFragment;
+import com.piyush004.studentroom.Room.users.RoomUsersFragment;
+import com.piyush004.studentroom.URoom;
 
 public class RoomActivity extends AppCompatActivity {
 
@@ -25,13 +28,15 @@ public class RoomActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String ROOMID = intent.getStringExtra("RoomID");
 
+        URoom.UserRoom = ROOMID;
+
         toolbar = findViewById(R.id.toolbarRoom);
         tabLayout = findViewById(R.id.tabLayoutRoom);
         viewPager = findViewById(R.id.ViewPagerRoom);
 
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        viewPagerAdapter.addFragment(new RoomStorageFragment(), "Mess Details");
-        viewPagerAdapter.addFragment(new RoomUsersFragment(), " Mess Menu");
+        viewPagerAdapter.addFragment(new RoomStorageFragment(), " ");
+        viewPagerAdapter.addFragment(new RoomUsersFragment(), " ");
 
         viewPager.setAdapter(viewPagerAdapter);
 

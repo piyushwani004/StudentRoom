@@ -162,8 +162,8 @@ public class HomeActivity extends AppCompatActivity {
                                         Toast.makeText(getApplicationContext(), "Password Match", Toast.LENGTH_SHORT).show();
 
                                         DatabaseReference dff = FirebaseDatabase.getInstance().getReference().child("ManagedRoom");
-                                        String key = dff.push().getKey();
-                                        dff.child(model.getName()).child("Users").child(key).setValue(firebaseAuth.getCurrentUser().getEmail());
+                                        String EmailResult = emailSplit(firebaseAuth.getCurrentUser().getEmail());
+                                        dff.child(model.getName()).child("Users").child(EmailResult).setValue(firebaseAuth.getCurrentUser().getEmail());
 
                                         Intent intent = new Intent(HomeActivity.this, RoomActivity.class);
                                         intent.putExtra("RoomID", model.getName());
@@ -287,6 +287,17 @@ public class HomeActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         adapter.stopListening();
+    }
+
+
+    public String emailSplit(String str) {
+        String resultStr = "";
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(i) > 64 && str.charAt(i) <= 122) {
+                resultStr = resultStr + str.charAt(i);
+            }
+        }
+        return resultStr;
     }
 
 

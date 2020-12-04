@@ -1,4 +1,4 @@
-package com.piyush004.studentroom.Room;
+package com.piyush004.studentroom.Room.storage;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,8 +10,7 @@ import androidx.fragment.app.Fragment;
 import com.piyush004.studentroom.R;
 
 
-public class RoomUsersFragment extends Fragment {
-
+public class RoomStorageFragment extends Fragment {
 
     private View view;
     private static final String ARG_PARAM1 = "param1";
@@ -21,12 +20,12 @@ public class RoomUsersFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public RoomUsersFragment() {
+    public RoomStorageFragment() {
         // Required empty public constructor
     }
 
-    public static RoomUsersFragment newInstance(String param1, String param2) {
-        RoomUsersFragment fragment = new RoomUsersFragment();
+    public static RoomStorageFragment newInstance(String param1, String param2) {
+        RoomStorageFragment fragment = new RoomStorageFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -46,8 +45,7 @@ public class RoomUsersFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        view = inflater.inflate(R.layout.fragment_room_users, container, false);
+        view = inflater.inflate(R.layout.fragment_room_storage, container, false);
 
 
 

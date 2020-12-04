@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/cardViewRoomCard"
+    android:id="@+id/cardViewRoomUsers"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardCornerRadius="8dp"
     app:cardElevation="1dp"
     app:cardUseCompatPadding="true">
+
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -15,12 +16,12 @@
         android:padding="10dp">
 
         <TextView
-            android:id="@+id/title_card"
+            android:id="@+id/title_card_Email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginLeft="20dp"
-            android:text="Title"
+            android:text="User Emails"
             android:textColor="#6E6D6D"
             android:textSize="22dp"
             android:textStyle="bold|italic" />
