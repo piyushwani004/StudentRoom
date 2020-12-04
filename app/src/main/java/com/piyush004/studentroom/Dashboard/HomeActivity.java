@@ -148,7 +148,7 @@ public class HomeActivity extends AppCompatActivity {
 
                         roomName_d.setText(model.getName());
                         builder.setTitle("Authentication");
-                        builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
+                        builder.setPositiveButton("Join", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -160,8 +160,13 @@ public class HomeActivity extends AppCompatActivity {
                                 } else if (!(dPass.isEmpty())) {
                                     if (dPass.equals(roompassword)) {
                                         Toast.makeText(getApplicationContext(), "Password Match", Toast.LENGTH_SHORT).show();
+
+                                        DatabaseReference dff = FirebaseDatabase.getInstance().getReference().child("ManagedRoom");
+                                        String key = dff.push().getKey();
+                                        dff.child(model.getName()).child("Users").child(key).setValue(firebaseAuth.getCurrentUser().getEmail());
+
                                         Intent intent = new Intent(HomeActivity.this, RoomActivity.class);
-                                        intent.putExtra("RoomID" , model.getName());
+                                        intent.putExtra("RoomID", model.getName());
                                         startActivity(intent);
                                     } else {
                                         Toast.makeText(getApplicationContext(), "Password Doed Not Match", Toast.LENGTH_SHORT).show();
