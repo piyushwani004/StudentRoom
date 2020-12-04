@@ -30,11 +30,14 @@ import com.firebase.ui.database.SnapshotParser;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.piyush004.studentroom.Auth.LoginActivity;
 import com.piyush004.studentroom.R;
 import com.piyush004.studentroom.Room.RoomActivity;
+import com.piyush004.studentroom.URoom;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -61,7 +64,22 @@ public class HomeActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        toolbar.setTitle(firebaseAuth.getCurrentUser().getEmail());
+        URoom uRoom = new URoom();
+        String SplitEmail = uRoom.emailSplit(firebaseAuth.getCurrentUser().getEmail());
+
+        DatabaseReference dfn = FirebaseDatabase.getInstance().getReference().child("AppUsers").child(SplitEmail);
+        dfn.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String Name = snapshot.child("Name").getValue(String.class);
+                toolbar.setTitle(Name);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         setSupportActionBar(toolbar);
 
         if (firebaseAuth.getCurrentUser() == null) {

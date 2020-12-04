@@ -15,7 +15,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.piyush004.studentroom.R;
+import com.piyush004.studentroom.URoom;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,7 +35,7 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-
+        final URoom uRoom = new URoom();
         firebaseAuth = FirebaseAuth.getInstance();
         buttonSignUp = findViewById(R.id.button_sign_up);
         editTextName = findViewById(R.id.editTextName);
@@ -87,6 +89,12 @@ public class RegisterActivity extends AppCompatActivity {
                                 progressBar.setVisibility(View.GONE);
                             } else {
                                 Toast.makeText(RegisterActivity.this, "Successfully registered", Toast.LENGTH_SHORT).show();
+
+                                String SPEmail = uRoom.emailSplit(email);
+                                databaseReference = FirebaseDatabase.getInstance().getReference().child("AppUsers").child(SPEmail);
+                                databaseReference.child("Name").setValue(name);
+                                databaseReference.child("Email").setValue(email);
+
                                 progressBar.setVisibility(View.GONE);
                                 startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
                             }
