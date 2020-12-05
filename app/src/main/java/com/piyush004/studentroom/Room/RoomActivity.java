@@ -2,12 +2,14 @@ package com.piyush004.studentroom.Room;
 
 import android.content.Intent;
 import android.os.Bundle;
-
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
-
 import com.google.android.material.tabs.TabLayout;
+import com.piyush004.studentroom.Dashboard.HomeActivity;
 import com.piyush004.studentroom.R;
 import com.piyush004.studentroom.Room.storage.RoomStorageFragment;
 import com.piyush004.studentroom.Room.users.RoomUsersFragment;
@@ -49,4 +51,28 @@ public class RoomActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.room_menu, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case R.id.action_RoomExit:
+                Intent intent = new Intent(RoomActivity.this, HomeActivity.class);
+                startActivity(intent);
+                break;
+
+        }
+        return true;
+    }
+
 }
