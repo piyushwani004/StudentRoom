@@ -8,11 +8,17 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.firebase.ui.database.SnapshotParser;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.piyush004.studentroom.R;
@@ -31,6 +37,8 @@ public class RoomStorageFragment extends Fragment {
     private FloatingActionButton floatingActionButton;
     private RecyclerView recyclerView;
     private EditText editTextSubName;
+    private FirebaseRecyclerOptions<StorageModel> options;
+    private FirebaseRecyclerAdapter<StorageModel, StorageHolder> adapter;
 
     public RoomStorageFragment() {
         // Required empty public constructor
@@ -61,9 +69,12 @@ public class RoomStorageFragment extends Fragment {
 
         floatingActionButton = view.findViewById(R.id.floatingActionButtonRoomStorage);
         recyclerView = view.findViewById(R.id.RecycleViewRoomStorage);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
         final DatabaseReference df = FirebaseDatabase.getInstance().getReference().child("ManagedRoom").child(URoom.UserRoom).child("Subject");
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,8 +109,54 @@ public class RoomStorageFragment extends Fragment {
 
                 builder.setView(dialogLayout);
                 builder.show();
+
             }
         });
+
+        options = new FirebaseRecyclerOptions.Builder<StorageModel>().setQuery(df, new SnapshotParser<StorageModel>() {
+
+            @NonNull
+            @Override
+            public StorageModel parseSnapshot(@NonNull DataSnapshot snapshot) {
+                return new StorageModel(
+
+                        snapshot.getValue(String.class)
+                );
+
+            }
+        }).build();
+
+        adapter = new FirebaseRecyclerAdapter<StorageModel, StorageHolder>(options) {
+
+            @Override
+            protected void onBindViewHolder(@NonNull StorageHolder holder, int position, @NonNull final StorageModel model) {
+
+                holder.setTxtSubject(model.getEmail());
+                holder.setTxtRoomName(URoom.UserRoom);
+
+                holder.textViewSubject.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        Toast.makeText(getContext(), "clicked...", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            }
+
+            @NonNull
+            @Override
+            public StorageHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.room_create_subject_card, parent, false);
+
+                return new StorageHolder(view);
+            }
+        };
+
+        adapter.startListening();
+        recyclerView.setAdapter(adapter);
+
 
         return view;
     }
