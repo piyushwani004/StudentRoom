@@ -4,6 +4,10 @@ public class URoom {
 
     public static String UserRoom = " ";
 
+    public static String RoomSubject = " ";
+
+    public static String UserEmail = " ";
+
     public String emailSplit(String str) {
         String resultStr = "";
         for (int i = 0; i < str.length(); i++) {

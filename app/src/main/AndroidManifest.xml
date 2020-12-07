@@ -12,7 +12,8 @@
         android:roundIcon="@drawable/copacabana_rio_de_janeiro_logo_lytle_isd_organization_discern_others_7830601c3a604c0aa9a0450a46e5d91a"
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents.Light.NoActionBar.Bridge">
-        <activity android:name=".Room.RoomActivity"></activity>
+        <activity android:name=".Room.storage.StorageHandler.RoomStorageHandler"></activity>
+        <activity android:name=".Room.RoomActivity" />
         <activity android:name=".Auth.RegisterActivity" />
         <activity android:name=".Auth.LoginActivity" />
         <activity android:name=".Dashboard.HomeActivity" />

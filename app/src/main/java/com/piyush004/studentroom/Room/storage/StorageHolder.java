@@ -11,13 +11,17 @@ import com.piyush004.studentroom.R;
 public class StorageHolder extends RecyclerView.ViewHolder {
 
 
-    TextView textViewSubject, textViewRoomName;
+    public TextView textViewSubject, textViewRoomName;
+    public TextView title_SolutionName, UploadedName;
 
     public StorageHolder(@NonNull View itemView) {
         super(itemView);
 
         this.textViewSubject = itemView.findViewById(R.id.title_Subject_Name);
         this.textViewRoomName = itemView.findViewById(R.id.Room_Name);
+
+        this.title_SolutionName = itemView.findViewById(R.id.title_SolutionName);
+        this.UploadedName = itemView.findViewById(R.id.UploadedName);
     }
 
     public void setTxtSubject(String string) {
@@ -27,6 +31,15 @@ public class StorageHolder extends RecyclerView.ViewHolder {
 
     public void setTxtRoomName(String string) {
         textViewRoomName.setText(string);
+    }
+
+
+    public void setTxtSolutionName(String string) {
+        title_SolutionName.setText(string);
+    }
+
+    public void setTxtUploadedName(String string) {
+        UploadedName.setText("Uploaded By : " + string);
     }
 
 }

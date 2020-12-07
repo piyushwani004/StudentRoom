@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
+
 import com.google.android.material.tabs.TabLayout;
 import com.piyush004.studentroom.Dashboard.HomeActivity;
 import com.piyush004.studentroom.R;
@@ -27,11 +29,6 @@ public class RoomActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
 
-        Intent intent = getIntent();
-        String ROOMID = intent.getStringExtra("RoomID");
-
-        URoom.UserRoom = ROOMID;
-
         toolbar = findViewById(R.id.toolbarRoom);
         tabLayout = findViewById(R.id.tabLayoutRoom);
         viewPager = findViewById(R.id.ViewPagerRoom);
@@ -47,7 +44,7 @@ public class RoomActivity extends AppCompatActivity {
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_baseline_storage_24);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_baseline_people_24);
 
-        toolbar.setTitle(ROOMID);
+        toolbar.setTitle(URoom.UserRoom);
         setSupportActionBar(toolbar);
 
     }

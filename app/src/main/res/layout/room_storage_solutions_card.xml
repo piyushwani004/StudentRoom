@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardViewSolution"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="1dp"
+    app:cardUseCompatPadding="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/imageViewRoom"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/documents"
+            app:civ_border_color="#FF000000"
+            app:civ_border_width="2dp" />
+
+
+        <TextView
+            android:id="@+id/title_SolutionName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_toEndOf="@id/imageViewRoom"
+            android:layout_toRightOf="@+id/imageViewRoom"
+            android:gravity="center"
+            android:text="File Name"
+            android:textColor="#000000"
+            android:textSize="22dp"
+            android:textStyle="bold|italic" />
+
+        <TextView
+            android:id="@+id/UploadedName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title_SolutionName"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="5dp"
+            android:layout_toEndOf="@id/imageViewRoom"
+            android:layout_toRightOf="@+id/imageViewRoom"
+            android:gravity="start"
+            android:text="Uploaded By :"
+            android:textAlignment="textStart"
+            android:textColor="#B5B4B6"
+            android:textSize="18dp" />
+
+    </RelativeLayout>
+
+</com.google.android.material.card.MaterialCardView>

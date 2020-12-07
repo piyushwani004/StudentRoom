@@ -12,11 +12,11 @@ public class StorageModel {
         Subject = email;
     }
 
-    public String getEmail() {
+    public String getSubject() {
         return Subject;
     }
 
-    public void setEmail(String email) {
+    public void setSubject(String email) {
         Subject = email;
     }
 

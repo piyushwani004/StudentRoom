@@ -1,6 +1,7 @@
 package com.piyush004.studentroom.Room.storage;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.piyush004.studentroom.R;
+import com.piyush004.studentroom.Room.storage.StorageHandler.RoomStorageHandler;
 import com.piyush004.studentroom.URoom;
 
 
@@ -131,14 +133,18 @@ public class RoomStorageFragment extends Fragment {
             @Override
             protected void onBindViewHolder(@NonNull StorageHolder holder, int position, @NonNull final StorageModel model) {
 
-                holder.setTxtSubject(model.getEmail());
+                holder.setTxtSubject(model.getSubject());
                 holder.setTxtRoomName(URoom.UserRoom);
 
                 holder.textViewSubject.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
+                        URoom.RoomSubject = model.getSubject();
+                        Intent intent = new Intent(getContext(), RoomStorageHandler.class);
+                        startActivity(intent);
                         Toast.makeText(getContext(), "clicked...", Toast.LENGTH_SHORT).show();
+
                     }
                 });
 

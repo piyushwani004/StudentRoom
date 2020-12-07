@@ -65,6 +65,7 @@ public class HomeActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         URoom uRoom = new URoom();
+        URoom.UserEmail = firebaseAuth.getCurrentUser().getEmail();
         String SplitEmail = uRoom.emailSplit(firebaseAuth.getCurrentUser().getEmail());
 
         DatabaseReference dfn = FirebaseDatabase.getInstance().getReference().child("AppUsers").child(SplitEmail);
@@ -178,13 +179,12 @@ public class HomeActivity extends AppCompatActivity {
                                 } else if (!(dPass.isEmpty())) {
                                     if (dPass.equals(roompassword)) {
                                         Toast.makeText(getApplicationContext(), "Password Match", Toast.LENGTH_SHORT).show();
-
+                                        URoom.UserRoom = model.getName();
                                         DatabaseReference dff = FirebaseDatabase.getInstance().getReference().child("ManagedRoom");
                                         String EmailResult = emailSplit(firebaseAuth.getCurrentUser().getEmail());
                                         dff.child(model.getName()).child("Users").child(EmailResult).setValue(firebaseAuth.getCurrentUser().getEmail());
 
                                         Intent intent = new Intent(HomeActivity.this, RoomActivity.class);
-                                        intent.putExtra("RoomID", model.getName());
                                         startActivity(intent);
                                     } else {
                                         Toast.makeText(getApplicationContext(), "Password Doed Not Match", Toast.LENGTH_SHORT).show();
