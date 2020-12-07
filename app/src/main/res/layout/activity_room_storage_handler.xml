@@ -97,17 +97,18 @@
         app:layout_constraintTop_toTopOf="@+id/textView9"
         app:srcCompat="@drawable/ic_baseline_attachment_24" />
 
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/RoomStoHandRecyViewSolu"
-        android:layout_width="409dp"
-        tools:listitem="@layout/room_storage_solutions_card"
-        android:layout_height="482dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginTop="250dp"
         android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/toolbarStorageHandler" />
+        tools:listitem="@layout/room_storage_solutions_card" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

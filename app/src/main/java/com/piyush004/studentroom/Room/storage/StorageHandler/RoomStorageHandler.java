@@ -87,8 +87,7 @@ public class RoomStorageHandler extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull StorageHolder holder, int position, @NonNull final StorageModel model) {
 
-                holder.setTxtSolutionName("Solution" + i);
-                i++;
+                holder.setTxtSolutionName("Solution");
                 holder.setTxtUploadedName(URoom.UserRoom);
 
                 holder.title_SolutionName.setOnClickListener(new View.OnClickListener() {
@@ -140,8 +139,8 @@ public class RoomStorageHandler extends AppCompatActivity {
             case R.id.action_RoomAnswer:
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setType("*/*");
-                startActivityForResult(intent, SELECT_Solution);
+                intent.setType("application/pdf");
+                startActivityForResult(Intent.createChooser(intent, "PDF File Select"), SELECT_Solution);
                 break;
 
             case R.id.action_RoomExitStorage:
@@ -176,7 +175,7 @@ public class RoomStorageHandler extends AppCompatActivity {
 
                     textViewFileName.setText(FileName);
 
-                    uploadQuestion();
+                    //uploadQuestion();
 
                 }
                 break;
@@ -195,7 +194,7 @@ public class RoomStorageHandler extends AppCompatActivity {
 
                     FileName = FileName.replaceAll("[0123456789]", "");
 
-                    uploadSolutions();
+                    //uploadSolutions();
 
                 }
                 break;
@@ -213,7 +212,7 @@ public class RoomStorageHandler extends AppCompatActivity {
             progressDialog.setTitle("Uploading...");
             progressDialog.show();
 
-            final StorageReference ref = storageReference.child("Files/").child(URoom.UserRoom).child(URoom.RoomSubject).child("Question");
+            final StorageReference ref = storageReference.child("Upload" + System.currentTimeMillis() + ".PDF");
             ref.putFile(uri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -261,7 +260,7 @@ public class RoomStorageHandler extends AppCompatActivity {
             final ProgressDialog progressDialog = new ProgressDialog(this);
             progressDialog.setTitle("Uploading...");
             progressDialog.show();
-            final StorageReference ref = storageReference.child("Files/").child(URoom.UserRoom).child(URoom.RoomSubject).child("Solution");
+            final StorageReference ref = storageReference.child("Upload" + System.currentTimeMillis() + ".PDF");
             ref.putFile(uri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
