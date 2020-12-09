@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,8 +26,10 @@ import com.firebase.ui.database.SnapshotParser;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -51,7 +54,6 @@ public class RoomStorageHandler extends AppCompatActivity {
     private RecyclerView recyclerViewSolution;
     private FirebaseRecyclerOptions<StorageModel> options;
     private FirebaseRecyclerAdapter<StorageModel, StorageHolder> adapter;
-    public int i = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,9 +68,25 @@ public class RoomStorageHandler extends AppCompatActivity {
 
         toolbar.setTitle(URoom.UserRoom);
         setSupportActionBar(toolbar);
+        final URoom room = new URoom();
 
+        final String UName = room.emailSplit(URoom.UserEmail);
+        DatabaseReference dfName = FirebaseDatabase.getInstance().getReference().child("AppUsers");
+        dfName.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String UNAME = snapshot.child(UName).child("Name").getValue(String.class);
+                URoom.UserName = UNAME;
 
-        final DatabaseReference dff = FirebaseDatabase.getInstance().getReference().child("ManagedRoom").child(URoom.UserRoom).child("Storage").child(URoom.RoomSubject).child("Solutions");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        final DatabaseReference dff = FirebaseDatabase.getInstance().getReference().child("ManagedRoom").child(URoom.UserRoom).child("Storage").child(URoom.RoomSubject).child(URoom.SubjectTopic).child("Solutions");
         options = new FirebaseRecyclerOptions.Builder<StorageModel>().setQuery(dff, new SnapshotParser<StorageModel>() {
 
             @NonNull
@@ -85,10 +103,27 @@ public class RoomStorageHandler extends AppCompatActivity {
         adapter = new FirebaseRecyclerAdapter<StorageModel, StorageHolder>(options) {
 
             @Override
-            protected void onBindViewHolder(@NonNull StorageHolder holder, int position, @NonNull final StorageModel model) {
+            protected void onBindViewHolder(@NonNull final StorageHolder holder, int position, @NonNull final StorageModel model) {
 
                 holder.setTxtSolutionName("Solution");
-                holder.setTxtUploadedName(URoom.UserRoom);
+
+
+                DatabaseReference dff = FirebaseDatabase.getInstance().getReference().child("ManagedRoom").child(URoom.UserRoom).child("Storage").child(URoom.RoomSubject).child(URoom.SubjectTopic).child("Solutions");
+                dff.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                        for (DataSnapshot child : snapshot.getChildren()) {
+                            Log.d("User key", child.getKey());
+                            holder.setTxtUploadedName(child.getKey());
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
 
                 holder.title_SolutionName.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -175,7 +210,7 @@ public class RoomStorageHandler extends AppCompatActivity {
 
                     textViewFileName.setText(FileName);
 
-                    //uploadQuestion();
+                    uploadQuestion();
 
                 }
                 break;
@@ -194,7 +229,7 @@ public class RoomStorageHandler extends AppCompatActivity {
 
                     FileName = FileName.replaceAll("[0123456789]", "");
 
-                    //uploadSolutions();
+                    uploadSolutions();
 
                 }
                 break;
@@ -224,7 +259,7 @@ public class RoomStorageHandler extends AppCompatActivity {
                                 public void onSuccess(Uri uri) {
 
                                     String FileUri = uri.toString();
-                                    final DatabaseReference df = FirebaseDatabase.getInstance().getReference().child("ManagedRoom").child(URoom.UserRoom).child("Storage").child(URoom.RoomSubject).child("Question");
+                                    final DatabaseReference df = FirebaseDatabase.getInstance().getReference().child("ManagedRoom").child(URoom.UserRoom).child("Storage").child(URoom.RoomSubject).child(URoom.SubjectTopic).child("Question");
                                     df.child("Question").setValue(FileUri);
                                 }
                             });
@@ -272,9 +307,9 @@ public class RoomStorageHandler extends AppCompatActivity {
                                 public void onSuccess(Uri uri) {
 
                                     String FileUri = uri.toString();
-                                    final DatabaseReference df = FirebaseDatabase.getInstance().getReference().child("ManagedRoom").child(URoom.UserRoom).child("Storage").child(URoom.RoomSubject).child("Solutions");
-                                    String userKey = uRoom.emailSplit(URoom.UserEmail);
-                                    df.child(userKey).setValue(FileUri);
+                                    final DatabaseReference df = FirebaseDatabase.getInstance().getReference().child("ManagedRoom").child(URoom.UserRoom).child("Storage").child(URoom.RoomSubject).child(URoom.SubjectTopic).child("Solutions");
+                                    //String userKey = uRoom.emailSplit(URoom.UserEmail);
+                                    df.child(URoom.UserName).setValue(FileUri);
                                 }
                             });
 
@@ -300,4 +335,23 @@ public class RoomStorageHandler extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        adapter.startListening();
+        recyclerViewSolution.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        adapter.startListening();
+        recyclerViewSolution.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        adapter.stopListening();
+    }
 }

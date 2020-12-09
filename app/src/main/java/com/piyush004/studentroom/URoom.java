@@ -8,6 +8,10 @@ public class URoom {
 
     public static String UserEmail = " ";
 
+    public static String SubjectTopic = " ";
+
+    public static String UserName = " ";
+
     public String emailSplit(String str) {
         String resultStr = "";
         for (int i = 0; i < str.length(); i++) {

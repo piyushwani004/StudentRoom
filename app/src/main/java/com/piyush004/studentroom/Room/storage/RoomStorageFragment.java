@@ -23,6 +23,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.piyush004.studentroom.R;
+import com.piyush004.studentroom.Room.Topic.SubjectTopicActivity;
 import com.piyush004.studentroom.Room.storage.StorageHandler.RoomStorageHandler;
 import com.piyush004.studentroom.URoom;
 
@@ -141,9 +142,9 @@ public class RoomStorageFragment extends Fragment {
                     public void onClick(View v) {
 
                         URoom.RoomSubject = model.getSubject();
-                        Intent intent = new Intent(getContext(), RoomStorageHandler.class);
+                        Intent intent = new Intent(getContext(), SubjectTopicActivity.class);
                         startActivity(intent);
-                        Toast.makeText(getContext(), "clicked...", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getContext(), "clicked...", Toast.LENGTH_SHORT).show();
 
                     }
                 });
