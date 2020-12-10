@@ -97,6 +97,7 @@ public class ViewPDF extends AppCompatActivity {
             case R.id.menuPDFDownload:
 
                 Toast.makeText(this, "Clicked Download Menu", Toast.LENGTH_SHORT).show();
+                new DownloadTask(ViewPDF.this, link);
                 break;
 
         }
