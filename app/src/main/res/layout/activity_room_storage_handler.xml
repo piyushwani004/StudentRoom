@@ -18,11 +18,12 @@
 
     </androidx.appcompat.widget.Toolbar>
 
+
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardViewRoomStorageHandler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="110dp"
         app:cardCornerRadius="10dp"
         app:cardElevation="1dp"
         app:cardUseCompatPadding="true"
@@ -54,6 +55,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_toEndOf="@id/imageViewQuestion"
                 android:layout_toRightOf="@+id/imageViewQuestion"
+                android:clickable="true"
                 android:gravity="center"
                 android:text="File Name"
                 android:textColor="#000000"
@@ -69,18 +71,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="30dp"
         android:text="Question"
         android:textSize="20dp"
         android:textStyle="italic"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbarStorageHandler" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewTopicTitle" />
 
     <TextView
         android:id="@+id/textView9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:text="Solution"
         android:textSize="20dp"
         android:textStyle="italic|bold"
@@ -102,7 +104,7 @@
         android:id="@+id/RoomStoHandRecyViewSolu"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="250dp"
+        android:layout_marginTop="300dp"
         android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -110,5 +112,17 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:listitem="@layout/room_storage_solutions_card" />
 
+    <TextView
+        android:id="@+id/textViewTopicTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/roboto_medium_italic"
+        android:text="Topic Name"
+        android:textSize="22dp"
+        android:textStyle="bold|italic"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarStorageHandler" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

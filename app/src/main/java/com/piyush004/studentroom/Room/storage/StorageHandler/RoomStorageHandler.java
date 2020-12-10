@@ -3,8 +3,8 @@ package com.piyush004.studentroom.Room.storage.StorageHandler;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -36,6 +37,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.piyush004.studentroom.R;
 import com.piyush004.studentroom.Room.RoomActivity;
+import com.piyush004.studentroom.Room.storage.StorageHandler.PDFView.ViewPDF;
 import com.piyush004.studentroom.Room.storage.StorageHolder;
 import com.piyush004.studentroom.Room.storage.StorageModel;
 import com.piyush004.studentroom.URoom;
@@ -50,11 +52,13 @@ public class RoomStorageHandler extends AppCompatActivity {
     private static int SELECT_Solution = 2;
     private FirebaseStorage storage;
     private StorageReference storageReference;
-    private TextView textViewFileName;
+    private TextView textViewFileName, textViewTopic;
     private RecyclerView recyclerViewSolution;
     private FirebaseRecyclerOptions<StorageModel> options;
     private FirebaseRecyclerAdapter<StorageModel, StorageHolder> adapter;
+    private String FileName;
 
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,12 +66,18 @@ public class RoomStorageHandler extends AppCompatActivity {
 
         toolbar = findViewById(R.id.toolbarStorageHandler);
         textViewFileName = findViewById(R.id.title_File_Name);
+        textViewTopic = findViewById(R.id.textViewTopicTitle);
         recyclerViewSolution = findViewById(R.id.RoomStoHandRecyViewSolu);
+
+
         recyclerViewSolution.setHasFixedSize(true);
         recyclerViewSolution.setLayoutManager(new LinearLayoutManager(this));
 
-        toolbar.setTitle(URoom.UserRoom);
+        toolbar.setTitle(URoom.RoomSubject);
         setSupportActionBar(toolbar);
+
+        textViewTopic.setText(URoom.SubjectTopic);
+
         final URoom room = new URoom();
 
         final String UName = room.emailSplit(URoom.UserEmail);
@@ -94,7 +104,8 @@ public class RoomStorageHandler extends AppCompatActivity {
             public StorageModel parseSnapshot(@NonNull DataSnapshot snapshot) {
                 return new StorageModel(
 
-                        snapshot.getValue(String.class)
+                        snapshot.getValue(String.class),
+                        snapshot.getKey()
                 );
 
             }
@@ -105,31 +116,19 @@ public class RoomStorageHandler extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull final StorageHolder holder, int position, @NonNull final StorageModel model) {
 
+                showQuestionPDF();
                 holder.setTxtSolutionName("Solution");
-
-
-                DatabaseReference dff = FirebaseDatabase.getInstance().getReference().child("ManagedRoom").child(URoom.UserRoom).child("Storage").child(URoom.RoomSubject).child(URoom.SubjectTopic).child("Solutions");
-                dff.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                        for (DataSnapshot child : snapshot.getChildren()) {
-                            Log.d("User key", child.getKey());
-                            holder.setTxtUploadedName(child.getKey());
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
+                holder.setTxtUploadedName(model.getURIName());
 
                 holder.title_SolutionName.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
+                        //Toast.makeText(RoomStorageHandler.this, model.getSubject(), Toast.LENGTH_SHORT).show();
 
+                        Intent intent = new Intent(v.getContext(), ViewPDF.class);
+                        intent.putExtra("link", model.getSubject());
+                        startActivity(intent);
                     }
                 });
 
@@ -202,7 +201,7 @@ public class RoomStorageHandler extends AppCompatActivity {
 
                     File f = new File("" + uri);
 
-                    String FileName = f.getName();
+                    FileName = f.getName();
 
                     FileName = FileName.replaceAll("[^ .,a-zA-Z0-9]", "");
 
@@ -223,7 +222,7 @@ public class RoomStorageHandler extends AppCompatActivity {
 
                     File file = new File("" + uri);
 
-                    String FileName = file.getName();
+                    FileName = file.getName();
 
                     FileName = FileName.replaceAll("[^ .,a-zA-Z0-9]", "");
 
@@ -261,6 +260,7 @@ public class RoomStorageHandler extends AppCompatActivity {
                                     String FileUri = uri.toString();
                                     final DatabaseReference df = FirebaseDatabase.getInstance().getReference().child("ManagedRoom").child(URoom.UserRoom).child("Storage").child(URoom.RoomSubject).child(URoom.SubjectTopic).child("Question");
                                     df.child("Question").setValue(FileUri);
+                                    df.child("FileName").setValue(FileName);
                                 }
                             });
 
@@ -287,7 +287,7 @@ public class RoomStorageHandler extends AppCompatActivity {
 
 
     private void uploadSolutions() {
-        final URoom uRoom = new URoom();
+//        final URoom uRoom = new URoom();
 
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
@@ -308,7 +308,6 @@ public class RoomStorageHandler extends AppCompatActivity {
 
                                     String FileUri = uri.toString();
                                     final DatabaseReference df = FirebaseDatabase.getInstance().getReference().child("ManagedRoom").child(URoom.UserRoom).child("Storage").child(URoom.RoomSubject).child(URoom.SubjectTopic).child("Solutions");
-                                    //String userKey = uRoom.emailSplit(URoom.UserEmail);
                                     df.child(URoom.UserName).setValue(FileUri);
                                 }
                             });
@@ -332,6 +331,37 @@ public class RoomStorageHandler extends AppCompatActivity {
                         }
                     });
         }
+    }
+
+
+    public void showQuestionPDF() {
+        DatabaseReference dff = FirebaseDatabase.getInstance().getReference().child("ManagedRoom").child(URoom.UserRoom).child("Storage").child(URoom.RoomSubject).child(URoom.SubjectTopic).child("Question");
+
+        dff.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String FirebaseFileName = snapshot.child("FileName").getValue(String.class);
+                final String FileURI = snapshot.child("Question").getValue(String.class);
+                textViewFileName.setText(FirebaseFileName);
+
+                textViewFileName.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(v.getContext(), ViewPDF.class);
+                        intent.putExtra("link", FileURI);
+                        startActivity(intent);
+                    }
+                });
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
     }
 
 
