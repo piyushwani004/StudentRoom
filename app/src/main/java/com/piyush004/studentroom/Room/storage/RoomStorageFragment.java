@@ -3,9 +3,12 @@ package com.piyush004.studentroom.Room.storage;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -14,6 +17,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -24,7 +28,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.piyush004.studentroom.R;
 import com.piyush004.studentroom.Room.Topic.SubjectTopicActivity;
-import com.piyush004.studentroom.Room.storage.StorageHandler.RoomStorageHandler;
 import com.piyush004.studentroom.URoom;
 
 
@@ -42,6 +45,12 @@ public class RoomStorageFragment extends Fragment {
     private EditText editTextSubName;
     private FirebaseRecyclerOptions<StorageModel> options;
     private FirebaseRecyclerAdapter<StorageModel, StorageHolder> adapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    int[] animationList = {R.anim.layout_animation_up_to_down,
+            R.anim.layout_animation_right_to_left,
+            R.anim.layout_animation_down_to_up,
+            R.anim.layout_animation_left_to_right};
+    int i = 0;
 
     public RoomStorageFragment() {
         // Required empty public constructor
@@ -69,7 +78,7 @@ public class RoomStorageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_room_storage, container, false);
-
+        swipeRefreshLayout = view.findViewById(R.id.swipeRoomStorage);
         floatingActionButton = view.findViewById(R.id.floatingActionButtonRoomStorage);
         recyclerView = view.findViewById(R.id.RecycleViewRoomStorage);
         recyclerView.setHasFixedSize(true);
@@ -99,6 +108,12 @@ public class RoomStorageFragment extends Fragment {
                             String key = df.push().getKey();
                             df.child(key + sname).setValue(sname);
                             Toast.makeText(getContext(), "Subject Created...", Toast.LENGTH_SHORT).show();
+                            if (i < animationList.length - 1) {
+                                i++;
+                            } else {
+                                i = 0;
+                            }
+                            runAnimationAgain();
                         }
                     }
                 });
@@ -165,6 +180,32 @@ public class RoomStorageFragment extends Fragment {
         recyclerView.setAdapter(adapter);
 
 
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                runAnimationAgain();
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (swipeRefreshLayout.isRefreshing()) {
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                    }
+                }, 1000);
+
+            }
+        });
+
+
         return view;
     }
+
+    private void runAnimationAgain() {
+        final LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(getContext(), animationList[i]);
+        recyclerView.setLayoutAnimation(controller);
+        adapter.notifyDataSetChanged();
+        recyclerView.scheduleLayoutAnimation();
+    }
+
 }

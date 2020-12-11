@@ -5,12 +5,15 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -57,6 +61,13 @@ public class RoomStorageHandler extends AppCompatActivity {
     private FirebaseRecyclerOptions<StorageModel> options;
     private FirebaseRecyclerAdapter<StorageModel, StorageHolder> adapter;
     private String FileName;
+private SwipeRefreshLayout swipeRefreshLayout;
+    int[] animationList = {R.anim.layout_animation_up_to_down,
+            R.anim.layout_animation_right_to_left,
+            R.anim.layout_animation_down_to_up,
+            R.anim.layout_animation_left_to_right};
+    int i = 0;
+
 
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
@@ -68,7 +79,7 @@ public class RoomStorageHandler extends AppCompatActivity {
         textViewFileName = findViewById(R.id.title_File_Name);
         textViewTopic = findViewById(R.id.textViewTopicTitle);
         recyclerViewSolution = findViewById(R.id.RoomStoHandRecyViewSolu);
-
+        swipeRefreshLayout = findViewById(R.id.swipeRoomStorageHandler);
 
         recyclerViewSolution.setHasFixedSize(true);
         recyclerViewSolution.setLayoutManager(new LinearLayoutManager(this));
@@ -147,6 +158,23 @@ public class RoomStorageHandler extends AppCompatActivity {
         adapter.startListening();
         recyclerViewSolution.setAdapter(adapter);
 
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                runAnimationAgain();
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (swipeRefreshLayout.isRefreshing()) {
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                    }
+                }, 1000);
+
+            }
+        });
+
     }
 
     @Override
@@ -166,15 +194,15 @@ public class RoomStorageHandler extends AppCompatActivity {
             case R.id.action_RoomQuestion:
                 Intent intentQue = new Intent(Intent.ACTION_GET_CONTENT);
                 intentQue.addCategory(Intent.CATEGORY_OPENABLE);
-                intentQue.setType("*/*");
-                startActivityForResult(intentQue, SELECT_Question);
+                intentQue.setType("application/pdf");
+                startActivityForResult(Intent.createChooser(intentQue, "Select PDF File"), SELECT_Question);
                 break;
 
             case R.id.action_RoomAnswer:
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setType("application/pdf");
-                startActivityForResult(Intent.createChooser(intent, "PDF File Select"), SELECT_Solution);
+                Intent intentAns = new Intent(Intent.ACTION_GET_CONTENT);
+                intentAns.addCategory(Intent.CATEGORY_OPENABLE);
+                intentAns.setType("application/pdf");
+                startActivityForResult(Intent.createChooser(intentAns, "Select PDF File"), SELECT_Solution);
                 break;
 
             case R.id.action_RoomExitStorage:
@@ -364,6 +392,12 @@ public class RoomStorageHandler extends AppCompatActivity {
 
     }
 
+    private void runAnimationAgain() {
+        final LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(this, animationList[i]);
+        recyclerViewSolution.setLayoutAnimation(controller);
+        adapter.notifyDataSetChanged();
+        recyclerViewSolution.scheduleLayoutAnimation();
+    }
 
     @Override
     protected void onPostResume() {

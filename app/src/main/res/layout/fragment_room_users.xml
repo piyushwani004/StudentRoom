@@ -6,10 +6,18 @@
     tools:context=".Room.users.RoomUsersFragment">
 
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/RecycleViewRoomUsers"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe"
         android:layout_width="match_parent"
-        tools:listitem="@layout/room_users_card"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/RecycleViewRoomUsers"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/room_users_card" />
+
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </FrameLayout>

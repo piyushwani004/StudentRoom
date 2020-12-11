@@ -1,15 +1,21 @@
 package com.piyush004.studentroom.Room.storage.StorageHandler.PDFView;
 
+import android.Manifest;
+import android.app.DownloadManager;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 
 import com.github.barteksc.pdfviewer.PDFView;
 import com.piyush004.studentroom.R;
@@ -25,6 +31,7 @@ public class ViewPDF extends AppCompatActivity {
     private PDFView pdfView;
     private String link = "";
     private Toolbar toolbar;
+    private static int REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +45,7 @@ public class ViewPDF extends AppCompatActivity {
 
         link = getIntent().getStringExtra("link");
         new ViewPDF.RetrievePDFStream().execute(link);
+
 
     }
 
@@ -95,13 +103,33 @@ public class ViewPDF extends AppCompatActivity {
         switch (item.getItemId()) {
 
             case R.id.menuPDFDownload:
-                //Toast.makeText(this, "Clicked Download Menu", Toast.LENGTH_SHORT).show();
-                new DownloadTask(ViewPDF.this, link);
+
+                ActivityCompat.requestPermissions(this, new String[]{
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                }, REQUEST_CODE);
+                downloadPDF(link);
                 break;
 
         }
 
         return true;
+    }
+
+    public void downloadPDF(String url) {
+
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            request.allowScanningByMediaScanner();
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        }
+
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, System.currentTimeMillis() + ".pdf");
+        DownloadManager downloadManager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+        request.setMimeType("application/pdf");
+        request.allowScanningByMediaScanner();
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
+        downloadManager.enqueue(request);
+
     }
 
 

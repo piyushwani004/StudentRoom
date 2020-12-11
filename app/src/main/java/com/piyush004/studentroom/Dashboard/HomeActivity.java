@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -27,6 +30,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -53,7 +57,12 @@ public class HomeActivity extends AppCompatActivity {
     public Holder holder;
     private FirebaseRecyclerOptions<Model> options;
     private FirebaseRecyclerAdapter<Model, Holder> adapter;
-
+    private SwipeRefreshLayout swipeRefreshLayout;
+    int[] animationList = {R.anim.layout_animation_up_to_down,
+            R.anim.layout_animation_right_to_left,
+            R.anim.layout_animation_down_to_up,
+            R.anim.layout_animation_left_to_right};
+    int i = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +73,7 @@ public class HomeActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         buttonCreateRoom = findViewById(R.id.buttonCreateRoom);
         recyclerView = (RecyclerView) findViewById(R.id.RecycleViewHome);
+        swipeRefreshLayout = findViewById(R.id.swipeRoomHome);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -149,6 +159,12 @@ public class HomeActivity extends AppCompatActivity {
                             df.child(key).child("RoomName").setValue(sname);
                             df.child(key).child("RoomPass").setValue(spass);
                             Toast.makeText(getApplicationContext(), "Room Created...", Toast.LENGTH_SHORT).show();
+                            if (i < animationList.length - 1) {
+                                i++;
+                            } else {
+                                i = 0;
+                            }
+                            runAnimationAgain();
                         }
                     }
                 });
@@ -253,6 +269,23 @@ public class HomeActivity extends AppCompatActivity {
         adapter.startListening();
         recyclerView.setAdapter(adapter);
 
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                runAnimationAgain();
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(swipeRefreshLayout.isRefreshing()) {
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                    }
+                }, 1000);
+
+            }
+        });
+
 
     }
 
@@ -340,11 +373,31 @@ public class HomeActivity extends AppCompatActivity {
         return connected;
     }
 
+    private void runAnimationAgain() {
+        final LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(this, animationList[i]);
+        recyclerView.setLayoutAnimation(controller);
+        adapter.notifyDataSetChanged();
+        recyclerView.scheduleLayoutAnimation();
+    }
+
 
     @Override
     protected void onStart() {
         super.onStart();
         adapter.startListening();
+        runAnimationAgain();
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        runAnimationAgain();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        runAnimationAgain();
     }
 
     @Override

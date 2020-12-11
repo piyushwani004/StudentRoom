@@ -3,9 +3,12 @@ package com.piyush004.studentroom.Room.Topic;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -37,6 +41,12 @@ public class SubjectTopicActivity extends AppCompatActivity {
     private TextView textView;
     private FirebaseRecyclerOptions<TopicModel> options;
     private FirebaseRecyclerAdapter<TopicModel, TopicHolder> adapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    int[] animationList = {R.anim.layout_animation_up_to_down,
+            R.anim.layout_animation_right_to_left,
+            R.anim.layout_animation_down_to_up,
+            R.anim.layout_animation_left_to_right};
+    int i = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +56,7 @@ public class SubjectTopicActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.RecycleViewSubjectTopic);
         floatingActionButton = findViewById(R.id.floatingActionButtonSubjectTopic);
         toolbar = findViewById(R.id.toolbarSubjectTopic);
+        swipeRefreshLayout = findViewById(R.id.swipeRoomTopic);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -79,7 +90,14 @@ public class SubjectTopicActivity extends AppCompatActivity {
                             String key = df.push().getKey();
                             df.child(key + TName).setValue(TName);
 
-                            Toast.makeText(getApplicationContext(), "Subject Created...", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Topic Created...", Toast.LENGTH_SHORT).show();
+
+                            if (i < animationList.length - 1) {
+                                i++;
+                            } else {
+                                i = 0;
+                            }
+                            runAnimationAgain();
 
                         }
                     }
@@ -147,5 +165,31 @@ public class SubjectTopicActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
 
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                runAnimationAgain();
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (swipeRefreshLayout.isRefreshing()) {
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                    }
+                }, 1000);
+
+            }
+        });
+
+
     }
+
+    private void runAnimationAgain() {
+        final LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(this, animationList[i]);
+        recyclerView.setLayoutAnimation(controller);
+        adapter.notifyDataSetChanged();
+        recyclerView.scheduleLayoutAnimation();
+    }
+
 }
