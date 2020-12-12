@@ -97,6 +97,7 @@
         android:clickable="true"
         android:onClick="onClickSignUpText"
         android:text="Sign Up"
+        android:textColorHighlight="@color/AppColor"
         android:textSize="18dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/textView6"

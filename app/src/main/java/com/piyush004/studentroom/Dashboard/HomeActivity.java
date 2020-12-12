@@ -64,6 +64,8 @@ public class HomeActivity extends AppCompatActivity {
             R.anim.layout_animation_left_to_right};
     int i = 0;
 
+    private String AdminEmail;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -158,6 +160,10 @@ public class HomeActivity extends AppCompatActivity {
                             String key = df.push().getKey();
                             df.child(key).child("RoomName").setValue(sname);
                             df.child(key).child("RoomPass").setValue(spass);
+
+                            DatabaseReference df = FirebaseDatabase.getInstance().getReference().child("ManagedAdmin");
+                            df.child(sname).child("Admin").setValue(firebaseAuth.getCurrentUser().getEmail());
+                            URoom.RoomAdmin = firebaseAuth.getCurrentUser().getEmail();
                             Toast.makeText(getApplicationContext(), "Room Created...", Toast.LENGTH_SHORT).show();
                             if (i < animationList.length - 1) {
                                 i++;
@@ -189,8 +195,8 @@ public class HomeActivity extends AppCompatActivity {
             public Model parseSnapshot(@NonNull DataSnapshot snapshot) {
                 return new Model(
 
-                        snapshot.child("RoomName").getValue().toString(),
-                        snapshot.child("RoomPass").getValue().toString()
+                        snapshot.child("RoomName").getValue(String.class),
+                        snapshot.child("RoomPass").getValue(String.class)
                 );
 
             }
@@ -222,10 +228,13 @@ public class HomeActivity extends AppCompatActivity {
                                 String dPass = roomPassword_d.getText().toString();
 
                                 if (dPass.isEmpty()) {
-                                    roomName_d.setError("Please Enter Password");
-                                    roomName_d.requestFocus();
+                                    roomPassword_d.setError("Please Enter Password");
+                                    roomPassword_d.requestFocus();
                                 } else if (!(dPass.isEmpty())) {
                                     if (dPass.equals(roompassword)) {
+
+                                        System.out.println("Admin : " + URoom.RoomAdmin);
+
                                         Toast.makeText(getApplicationContext(), "Password Match", Toast.LENGTH_SHORT).show();
                                         URoom.UserRoom = model.getName();
                                         DatabaseReference dff = FirebaseDatabase.getInstance().getReference().child("ManagedRoom");
@@ -235,7 +244,7 @@ public class HomeActivity extends AppCompatActivity {
                                         Intent intent = new Intent(HomeActivity.this, RoomActivity.class);
                                         startActivity(intent);
                                     } else {
-                                        Toast.makeText(getApplicationContext(), "Password Doed Not Match", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getApplicationContext(), "Password Does Not Match", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             }
@@ -253,6 +262,7 @@ public class HomeActivity extends AppCompatActivity {
 
                     }
                 });
+
 
             }
 
@@ -277,7 +287,7 @@ public class HomeActivity extends AppCompatActivity {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if(swipeRefreshLayout.isRefreshing()) {
+                        if (swipeRefreshLayout.isRefreshing()) {
                             swipeRefreshLayout.setRefreshing(false);
                         }
                     }
