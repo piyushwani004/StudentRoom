@@ -2,6 +2,8 @@ package com.piyush004.studentroom;
 
 public class URoom {
 
+    private String RoomAdminEmail;
+
     public static String UserRoom = " ";
 
     public static String RoomSubject = " ";
@@ -23,5 +25,7 @@ public class URoom {
         }
         return resultStr;
     }
+
+
 
 }

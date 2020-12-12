@@ -235,7 +235,7 @@ public class HomeActivity extends AppCompatActivity {
 
                                         System.out.println("Admin : " + URoom.RoomAdmin);
 
-                                        Toast.makeText(getApplicationContext(), "Password Match", Toast.LENGTH_SHORT).show();
+//                                        Toast.makeText(getApplicationContext(), "Password Match", Toast.LENGTH_SHORT).show();
                                         URoom.UserRoom = model.getName();
                                         DatabaseReference dff = FirebaseDatabase.getInstance().getReference().child("ManagedRoom");
                                         String EmailResult = emailSplit(firebaseAuth.getCurrentUser().getEmail());

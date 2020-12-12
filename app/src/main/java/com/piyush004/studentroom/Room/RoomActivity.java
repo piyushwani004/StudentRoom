@@ -1,5 +1,7 @@
 package com.piyush004.studentroom.Room;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -7,11 +9,21 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.piyush004.studentroom.Dashboard.HomeActivity;
 import com.piyush004.studentroom.R;
 import com.piyush004.studentroom.Room.storage.RoomStorageFragment;
 import com.piyush004.studentroom.Room.users.RoomUsersFragment;
@@ -23,6 +35,9 @@ public class RoomActivity extends AppCompatActivity {
     private ViewPagerAdapter viewPagerAdapter;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private FirebaseAuth firebaseAuth;
+    private String RoomAdminEmail;
+    private AlertDialog.Builder builderDelete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +73,7 @@ public class RoomActivity extends AppCompatActivity {
             }
         });
 
+
     }
 
     @Override
@@ -80,12 +96,82 @@ public class RoomActivity extends AppCompatActivity {
                 break;*/
 
             case R.id.action_RoomDelete:
-                Toast.makeText(this, "Delete", Toast.LENGTH_SHORT).show();
+                onRoomDelete();
                 break;
 
 
         }
         return true;
     }
+
+
+    public void onRoomDelete() {
+        final DatabaseReference Delete = FirebaseDatabase.getInstance().getReference();
+        final String CurrentUser = URoom.UserEmail;
+        DatabaseReference df = FirebaseDatabase.getInstance().getReference().child("ManagedAdmin").child(URoom.UserRoom);
+        df.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                RoomAdminEmail = snapshot.child("Admin").getValue(String.class);
+                if (RoomAdminEmail == null) {
+                    Toast.makeText(RoomActivity.this, " Admin Not Found ", Toast.LENGTH_SHORT).show();
+                } else if (!(CurrentUser.equals(RoomAdminEmail))) {
+                    Toast.makeText(RoomActivity.this, "" + CurrentUser + ",You are not Admin of that " + URoom.UserRoom + "", Toast.LENGTH_LONG).show();
+                } else if (CurrentUser.equals(RoomAdminEmail)) {
+
+                    builderDelete = new AlertDialog.Builder(RoomActivity.this);
+                    builderDelete.setMessage("Do You Want To Delete Current Room ?")
+                            .setCancelable(false)
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+
+                                    Delete.child("ManagedAdmin").child(URoom.UserRoom).child("Admin").removeValue();
+                                    Delete.child("ManagedRoom").child(URoom.UserRoom).removeValue();
+
+                                    Query RoomQuery = Delete.child("Room").orderByChild("RoomName").equalTo(URoom.UserRoom);
+
+                                    RoomQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            for (DataSnapshot appleSnapshot : dataSnapshot.getChildren()) {
+                                                appleSnapshot.getRef().removeValue();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+                                            System.out.println("On Canceled");
+                                        }
+
+                                    });
+
+                                    startActivity(new Intent(RoomActivity.this, HomeActivity.class));
+                                    Toast.makeText(RoomActivity.this, "Remove Room Successfully", Toast.LENGTH_LONG).show();
+
+                                }
+                            })
+                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+                    AlertDialog alert = builderDelete.create();
+                    alert.setTitle("Room Delete Alert");
+                    alert.show();
+
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
 
 }

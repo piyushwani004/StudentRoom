@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/action_RoomDelete"
-        android:icon="@drawable/ic_baseline_delete_24"
+        android:icon="@drawable/icon_delete_28"
         android:title="Exit"
         app:showAsAction="always" />
 
