@@ -1,6 +1,7 @@
 package com.piyush004.studentroom.Room.storage.StorageHandler;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -40,7 +42,6 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.piyush004.studentroom.R;
-import com.piyush004.studentroom.Room.RoomActivity;
 import com.piyush004.studentroom.Room.storage.StorageHandler.PDFView.ViewPDF;
 import com.piyush004.studentroom.Room.storage.StorageHolder;
 import com.piyush004.studentroom.Room.storage.StorageModel;
@@ -61,7 +62,9 @@ public class RoomStorageHandler extends AppCompatActivity {
     private FirebaseRecyclerOptions<StorageModel> options;
     private FirebaseRecyclerAdapter<StorageModel, StorageHolder> adapter;
     private String FileName;
-private SwipeRefreshLayout swipeRefreshLayout;
+    private AlertDialog.Builder builderDelete;
+    private String RoomAdminEmail;
+    private SwipeRefreshLayout swipeRefreshLayout;
     int[] animationList = {R.anim.layout_animation_up_to_down,
             R.anim.layout_animation_right_to_left,
             R.anim.layout_animation_down_to_up,
@@ -156,6 +159,63 @@ private SwipeRefreshLayout swipeRefreshLayout;
                     }
                 });
 
+                holder.title_SolutionName.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+
+
+                        final DatabaseReference Delete = FirebaseDatabase.getInstance().getReference();
+                        final String CurrentUser = URoom.UserEmail;
+                        final String CurrentUserName = URoom.UserName;
+                        DatabaseReference df = FirebaseDatabase.getInstance().getReference().child("ManagedAdmin").child(URoom.UserRoom);
+                        df.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                RoomAdminEmail = snapshot.child("Admin").getValue(String.class);
+                                if (RoomAdminEmail == null) {
+                                    Toast.makeText(RoomStorageHandler.this, " Admin Not Found ", Toast.LENGTH_SHORT).show();
+                                } else if (!(CurrentUser.equals(RoomAdminEmail))) {
+                                    Toast.makeText(RoomStorageHandler.this, "" + CurrentUser + ",You are not Admin of that " + URoom.UserRoom + "", Toast.LENGTH_LONG).show();
+                                } else if (CurrentUser.equals(RoomAdminEmail)) {
+
+                                    builderDelete = new AlertDialog.Builder(RoomStorageHandler.this);
+                                    builderDelete.setMessage("Do You Want To Delete Current Room ?")
+                                            .setCancelable(false)
+                                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+
+                                                    Delete.child("ManagedRoom").child(URoom.UserRoom).child("Storage").child(URoom.RoomSubject).child(URoom.SubjectTopic).child("Solutions").child(CurrentUserName).removeValue();
+                                                    adapter.notifyDataSetChanged();
+                                                    Toast.makeText(RoomStorageHandler.this, "Remove Solution Successfully", Toast.LENGTH_LONG).show();
+
+                                                }
+                                            })
+                                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    dialog.cancel();
+                                                }
+                                            });
+                                    AlertDialog alert = builderDelete.create();
+                                    alert.setTitle("Room Delete Alert");
+                                    alert.show();
+
+
+                                }
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
+
+                        return true;
+                    }
+                });
+
             }
 
             @NonNull
@@ -170,6 +230,7 @@ private SwipeRefreshLayout swipeRefreshLayout;
 
         adapter.startListening();
         recyclerViewSolution.setAdapter(adapter);
+
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -280,6 +341,7 @@ private SwipeRefreshLayout swipeRefreshLayout;
 
 
     private void uploadQuestion() {
+
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
         if (uri != null) {
@@ -328,7 +390,6 @@ private SwipeRefreshLayout swipeRefreshLayout;
 
 
     private void uploadSolutions() {
-//        final URoom uRoom = new URoom();
 
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();

@@ -26,8 +26,11 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.piyush004.studentroom.R;
 import com.piyush004.studentroom.Room.storage.StorageHandler.RoomStorageHandler;
 import com.piyush004.studentroom.URoom;
@@ -42,6 +45,9 @@ public class SubjectTopicActivity extends AppCompatActivity {
     private FirebaseRecyclerOptions<TopicModel> options;
     private FirebaseRecyclerAdapter<TopicModel, TopicHolder> adapter;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private AlertDialog.Builder builderDelete;
+    private String RoomAdminEmail;
+
     int[] animationList = {R.anim.layout_animation_up_to_down,
             R.anim.layout_animation_right_to_left,
             R.anim.layout_animation_down_to_up,
@@ -100,8 +106,7 @@ public class SubjectTopicActivity extends AppCompatActivity {
                             editText.requestFocus();
                         } else if (!(TName.isEmpty())) {
 
-                            String key = df.push().getKey();
-                            df.child(key + TName).setValue(TName);
+                            df.child(TName).setValue(TName);
 
                             Toast.makeText(getApplicationContext(), "Topic Created...", Toast.LENGTH_SHORT).show();
 
@@ -161,6 +166,83 @@ public class SubjectTopicActivity extends AppCompatActivity {
 
                     }
                 });
+
+
+                holder.textViewTitle_Topic_Name.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+
+
+                        final DatabaseReference Delete = FirebaseDatabase.getInstance().getReference();
+                        final String CurrentUser = URoom.UserEmail;
+                        final String CurrentUserName = URoom.UserName;
+                        DatabaseReference df = FirebaseDatabase.getInstance().getReference().child("ManagedAdmin").child(URoom.UserRoom);
+                        df.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                RoomAdminEmail = snapshot.child("Admin").getValue(String.class);
+                                if (RoomAdminEmail == null) {
+                                    Toast.makeText(SubjectTopicActivity.this, " Admin Not Found ", Toast.LENGTH_SHORT).show();
+                                } else if (!(CurrentUser.equals(RoomAdminEmail))) {
+                                    Toast.makeText(SubjectTopicActivity.this, "" + CurrentUser + ",You are not Admin of that " + URoom.UserRoom + "", Toast.LENGTH_LONG).show();
+                                } else if (CurrentUser.equals(RoomAdminEmail)) {
+
+                                    builderDelete = new AlertDialog.Builder(SubjectTopicActivity.this);
+                                    builderDelete.setMessage("Do You Want To Delete Current Room ?")
+                                            .setCancelable(false)
+                                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+
+                                                    Delete.child("ManagedRoom").child(URoom.UserRoom).child("Storage").child(URoom.RoomSubject).child(URoom.SubjectTopic).removeValue();
+
+                                                    Query RoomQuery = Delete.child("ManagedRoom").child(URoom.UserRoom).child("Topics").orderByChild("unit1").equalTo(URoom.SubjectTopic);
+
+                                                    RoomQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                                            for (DataSnapshot appleSnapshot : dataSnapshot.getChildren()) {
+                                                                appleSnapshot.getRef().removeValue();
+                                                            }
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(DatabaseError databaseError) {
+                                                            System.out.println("On Canceled");
+                                                        }
+
+                                                    });
+
+                                                    adapter.notifyDataSetChanged();
+                                                    Toast.makeText(SubjectTopicActivity.this, "Remove Solution Successfully", Toast.LENGTH_LONG).show();
+
+                                                }
+                                            })
+                                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    dialog.cancel();
+                                                }
+                                            });
+                                    AlertDialog alert = builderDelete.create();
+                                    alert.setTitle("Room Delete Alert");
+                                    alert.show();
+
+
+                                }
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
+
+                        return true;
+                    }
+                });
+
 
             }
 
