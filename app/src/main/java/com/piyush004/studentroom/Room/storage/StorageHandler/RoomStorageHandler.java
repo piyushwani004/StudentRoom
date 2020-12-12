@@ -87,6 +87,19 @@ private SwipeRefreshLayout swipeRefreshLayout;
         toolbar.setTitle(URoom.RoomSubject);
         setSupportActionBar(toolbar);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+
+                finish();
+            }
+        });
+
+
         textViewTopic.setText(URoom.SubjectTopic);
 
         final URoom room = new URoom();
@@ -205,10 +218,10 @@ private SwipeRefreshLayout swipeRefreshLayout;
                 startActivityForResult(Intent.createChooser(intentAns, "Select PDF File"), SELECT_Solution);
                 break;
 
-            case R.id.action_RoomExitStorage:
+            /*case R.id.action_RoomExitStorage:
                 Intent intent2 = new Intent(RoomStorageHandler.this, RoomActivity.class);
                 startActivity(intent2);
-                break;
+                break;*/
 
         }
 

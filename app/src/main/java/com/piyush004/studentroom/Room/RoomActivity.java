@@ -1,10 +1,10 @@
 package com.piyush004.studentroom.Room;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,7 +12,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
-import com.piyush004.studentroom.Dashboard.HomeActivity;
 import com.piyush004.studentroom.R;
 import com.piyush004.studentroom.Room.storage.RoomStorageFragment;
 import com.piyush004.studentroom.Room.users.RoomUsersFragment;
@@ -47,6 +46,17 @@ public class RoomActivity extends AppCompatActivity {
 
         toolbar.setTitle(URoom.UserRoom);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+
+                finish();
+            }
+        });
 
     }
 
@@ -64,10 +74,10 @@ public class RoomActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
 
-            case R.id.action_RoomExit:
+            /*case R.id.action_RoomExit:
                 Intent intent = new Intent(RoomActivity.this, HomeActivity.class);
                 startActivity(intent);
-                break;
+                break;*/
 
             case R.id.action_RoomDelete:
                 Toast.makeText(this, "Delete", Toast.LENGTH_SHORT).show();

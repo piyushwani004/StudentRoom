@@ -64,6 +64,19 @@ public class SubjectTopicActivity extends AppCompatActivity {
         toolbar.setTitle(URoom.RoomSubject);
         setSupportActionBar(toolbar);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+
+                finish();
+            }
+        });
+
+
         final DatabaseReference df = FirebaseDatabase.getInstance().getReference().child("ManagedRoom").child(URoom.UserRoom).child("Topics").child(URoom.RoomSubject);
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 

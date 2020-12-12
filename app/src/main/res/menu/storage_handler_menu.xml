@@ -10,9 +10,5 @@
         android:title="Answer"
         android:tooltipText="Upload Answer" />
 
-    <item
-        android:id="@+id/action_RoomExitStorage"
-        android:title="Exit"
-        android:tooltipText="Exit" />
 
 </menu>

@@ -8,10 +8,4 @@
         android:title="Exit"
         app:showAsAction="always" />
 
-    <item
-        android:id="@+id/action_RoomExit"
-        android:icon="@drawable/exit24"
-        android:title="Exit"
-        app:showAsAction="always" />
-
 </menu>

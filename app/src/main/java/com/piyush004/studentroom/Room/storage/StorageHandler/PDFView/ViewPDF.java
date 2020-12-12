@@ -12,6 +12,7 @@ import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -42,6 +43,19 @@ public class ViewPDF extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbarViewPDF);
         toolbar.setTitle(" PDF Viewer ");
         setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+
+                finish();
+            }
+        });
+
 
         link = getIntent().getStringExtra("link");
         new ViewPDF.RetrievePDFStream().execute(link);
