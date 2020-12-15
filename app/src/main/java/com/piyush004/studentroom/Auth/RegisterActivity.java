@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -27,6 +28,7 @@ public class RegisterActivity extends AppCompatActivity {
     private Button buttonSignUp;
     private EditText editTextName, editTextEmail, editTextPassword, editTextVerifyPassword;
     private String name, email, pass, repass;
+    private TextInputLayout TextInputLayoutPass, TextInputLayoutRePass;
     private FirebaseAuth firebaseAuth;
     private DatabaseReference databaseReference;
     private ProgressBar progressBar;
@@ -43,8 +45,11 @@ public class RegisterActivity extends AppCompatActivity {
         editTextPassword = findViewById(R.id.editTextPassword);
         editTextVerifyPassword = findViewById(R.id.editTextVerifyPassword);
         progressBar = findViewById(R.id.progressBar);
+        TextInputLayoutPass = findViewById(R.id.EditTextLayoutPassword);
+        TextInputLayoutRePass = findViewById(R.id.EditTextLayoutVerifyPassword);
 
         progressBar.setVisibility(View.GONE);
+
 
         buttonSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,7 +75,8 @@ public class RegisterActivity extends AppCompatActivity {
                 } else if (!(isValidEmail(email))) {
                     editTextEmail.setError("Please Enter Valid Email..!!!");
                 } else if (!(isValidPassword(pass))) {
-                    editTextPassword.setError("Please Enter Valid Password..!!!");
+                    Toast.makeText(RegisterActivity.this, "Passwords must contain at least six characters, including uppercase, lowercase letters and numbers", Toast.LENGTH_LONG).show();
+                    editTextPassword.setError("Passwords must contain at least six characters, including uppercase, lowercase letters and numbers");
                 } else if (!(pass.equals(repass))) {
                     Toast.makeText(RegisterActivity.this, "Password Does Not Match", Toast.LENGTH_SHORT).show();
                     editTextVerifyPassword.setError("Password Does Not Match");

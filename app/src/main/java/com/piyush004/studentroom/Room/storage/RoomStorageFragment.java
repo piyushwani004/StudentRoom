@@ -24,8 +24,10 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.piyush004.studentroom.R;
 import com.piyush004.studentroom.Room.Topic.SubjectTopicActivity;
 import com.piyush004.studentroom.URoom;
@@ -46,6 +48,8 @@ public class RoomStorageFragment extends Fragment {
     private FirebaseRecyclerOptions<StorageModel> options;
     private FirebaseRecyclerAdapter<StorageModel, StorageHolder> adapter;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private String RoomAdminEmail;
+    private AlertDialog.Builder builderDelete;
     int[] animationList = {R.anim.layout_animation_up_to_down,
             R.anim.layout_animation_right_to_left,
             R.anim.layout_animation_down_to_up,
@@ -105,8 +109,7 @@ public class RoomStorageFragment extends Fragment {
                             editTextSubName.setError("Please Enter Subject Name");
                             editTextSubName.requestFocus();
                         } else if (!(sname.isEmpty())) {
-                            String key = df.push().getKey();
-                            df.child(key + sname).setValue(sname);
+                            df.child(sname).setValue(sname);
                             Toast.makeText(getContext(), "Subject Created...", Toast.LENGTH_SHORT).show();
                             if (i < animationList.length - 1) {
                                 i++;
@@ -163,6 +166,64 @@ public class RoomStorageFragment extends Fragment {
 
                     }
                 });
+
+                holder.textViewSubject.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        URoom.RoomSubject = model.getSubject();
+
+                        final DatabaseReference Delete = FirebaseDatabase.getInstance().getReference();
+                        final String CurrentUser = URoom.UserEmail;
+
+                        DatabaseReference df = FirebaseDatabase.getInstance().getReference().child("ManagedAdmin").child(URoom.UserRoom);
+                        df.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                RoomAdminEmail = snapshot.child("Admin").getValue(String.class);
+                                if (RoomAdminEmail == null) {
+                                    Toast.makeText(getContext(), " Admin Not Found ", Toast.LENGTH_SHORT).show();
+                                } else if (!(CurrentUser.equals(RoomAdminEmail))) {
+                                    Toast.makeText(getContext(), "" + CurrentUser + ",You are not Admin of that " + URoom.UserRoom + "", Toast.LENGTH_LONG).show();
+                                } else if (CurrentUser.equals(RoomAdminEmail)) {
+
+                                    builderDelete = new AlertDialog.Builder(getContext());
+                                    builderDelete.setMessage("Do You Want To Delete Current Subject Name ?")
+                                            .setCancelable(false)
+                                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+
+                                                    Delete.child("ManagedRoom").child(URoom.UserRoom).child("Subject").child(URoom.RoomSubject).removeValue();
+                                                    adapter.notifyDataSetChanged();
+                                                    Toast.makeText(getContext(), "Remove Subject Successfully", Toast.LENGTH_LONG).show();
+
+                                                }
+                                            })
+                                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    dialog.cancel();
+                                                }
+                                            });
+                                    AlertDialog alert = builderDelete.create();
+                                    alert.setTitle("Subject Delete Alert");
+                                    alert.show();
+
+
+                                }
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
+
+                        return true;
+                    }
+                });
+
 
             }
 

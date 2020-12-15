@@ -172,7 +172,7 @@ public class SubjectTopicActivity extends AppCompatActivity {
                     @Override
                     public boolean onLongClick(View v) {
 
-
+                        URoom.SubjectTopic = model.getTopicName();
                         final DatabaseReference Delete = FirebaseDatabase.getInstance().getReference();
                         final String CurrentUser = URoom.UserEmail;
                         final String CurrentUserName = URoom.UserName;
@@ -189,32 +189,16 @@ public class SubjectTopicActivity extends AppCompatActivity {
                                 } else if (CurrentUser.equals(RoomAdminEmail)) {
 
                                     builderDelete = new AlertDialog.Builder(SubjectTopicActivity.this);
-                                    builderDelete.setMessage("Do You Want To Delete Current Room ?")
+                                    builderDelete.setMessage("Do You Want To Delete Current Topic Name ?")
                                             .setCancelable(false)
                                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                                 public void onClick(DialogInterface dialog, int id) {
 
-                                                    Delete.child("ManagedRoom").child(URoom.UserRoom).child("Storage").child(URoom.RoomSubject).child(URoom.SubjectTopic).removeValue();
+                                                   // Delete.child("ManagedRoom").child(URoom.UserRoom).child("Storage").child(URoom.RoomSubject).child(URoom.SubjectTopic);
 
-                                                    Query RoomQuery = Delete.child("ManagedRoom").child(URoom.UserRoom).child("Topics").orderByChild("unit1").equalTo(URoom.SubjectTopic);
-
-                                                    RoomQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                                                        @Override
-                                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                                            for (DataSnapshot appleSnapshot : dataSnapshot.getChildren()) {
-                                                                appleSnapshot.getRef().removeValue();
-                                                            }
-                                                        }
-
-                                                        @Override
-                                                        public void onCancelled(DatabaseError databaseError) {
-                                                            System.out.println("On Canceled");
-                                                        }
-
-                                                    });
-
+                                                    Delete.child("ManagedRoom").child(URoom.UserRoom).child("Topics").child(URoom.RoomSubject).child(URoom.SubjectTopic).removeValue();
                                                     adapter.notifyDataSetChanged();
-                                                    Toast.makeText(SubjectTopicActivity.this, "Remove Solution Successfully", Toast.LENGTH_LONG).show();
+                                                    Toast.makeText(SubjectTopicActivity.this, "Remove Topic Successfully", Toast.LENGTH_LONG).show();
 
                                                 }
                                             })
@@ -224,7 +208,7 @@ public class SubjectTopicActivity extends AppCompatActivity {
                                                 }
                                             });
                                     AlertDialog alert = builderDelete.create();
-                                    alert.setTitle("Room Delete Alert");
+                                    alert.setTitle("Topic Delete Alert");
                                     alert.show();
 
 

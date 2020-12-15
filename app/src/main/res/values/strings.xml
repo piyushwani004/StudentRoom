@@ -2,4 +2,9 @@
     <string name="app_name">StudentRoom</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="PasswordText">Passwords must contain at least six characters, including uppercase, lowercase letters and numbers</string>
+
+    <string name="password_helper">For eg.Abc@123</string>
+
 </resources>
