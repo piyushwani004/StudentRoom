@@ -118,6 +118,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String Name = snapshot.child("Name").getValue(String.class);
                 toolbar.setTitle(Name);
+                URoom.UserName = Name;
             }
 
             @Override

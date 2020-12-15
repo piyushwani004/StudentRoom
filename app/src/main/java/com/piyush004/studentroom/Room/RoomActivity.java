@@ -25,6 +25,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.piyush004.studentroom.Dashboard.HomeActivity;
 import com.piyush004.studentroom.R;
+import com.piyush004.studentroom.Room.Chat.RoomChatFragment;
 import com.piyush004.studentroom.Room.storage.RoomStorageFragment;
 import com.piyush004.studentroom.Room.users.RoomUsersFragment;
 import com.piyush004.studentroom.URoom;
@@ -50,6 +51,7 @@ public class RoomActivity extends AppCompatActivity {
 
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPagerAdapter.addFragment(new RoomStorageFragment(), " ");
+        viewPagerAdapter.addFragment(new RoomChatFragment(), " ");
         viewPagerAdapter.addFragment(new RoomUsersFragment(), " ");
 
         viewPager.setAdapter(viewPagerAdapter);
@@ -57,7 +59,9 @@ public class RoomActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
 
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_baseline_storage_24);
-        tabLayout.getTabAt(1).setIcon(R.drawable.ic_baseline_people_24);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_baseline_chat_24);
+        tabLayout.getTabAt(2).setIcon(R.drawable.ic_baseline_people_24);
+
 
         toolbar.setTitle(URoom.UserRoom);
         setSupportActionBar(toolbar);

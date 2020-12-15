@@ -23,7 +23,7 @@
             android:layout_marginLeft="20dp"
             android:text="User Emails"
             android:textColor="#6E6D6D"
-            android:textSize="22dp"
+            android:textSize="18dp"
             android:textStyle="bold|italic" />
 
     </RelativeLayout>
