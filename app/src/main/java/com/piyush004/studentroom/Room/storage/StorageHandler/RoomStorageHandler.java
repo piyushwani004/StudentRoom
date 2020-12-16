@@ -156,7 +156,7 @@ public class RoomStorageHandler extends AppCompatActivity {
                     public void onClick(View v) {
 
                         //Toast.makeText(RoomStorageHandler.this, model.getSubject(), Toast.LENGTH_SHORT).show();
-
+                        finish();
                         Intent intent = new Intent(v.getContext(), ViewPDF.class);
                         intent.putExtra("link", model.getSubject());
                         startActivity(intent);
@@ -454,6 +454,7 @@ public class RoomStorageHandler extends AppCompatActivity {
                 cardView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        finish();
                         Intent intent = new Intent(v.getContext(), ViewPDF.class);
                         intent.putExtra("link", FileURI);
                         startActivity(intent);

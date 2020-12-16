@@ -241,6 +241,7 @@ public class HomeActivity extends AppCompatActivity {
                                         String EmailResult = emailSplit(firebaseAuth.getCurrentUser().getEmail());
                                         dff.child(model.getName()).child("Users").child(EmailResult).setValue(firebaseAuth.getCurrentUser().getEmail());
 
+                                        finish();
                                         Intent intent = new Intent(HomeActivity.this, RoomActivity.class);
                                         startActivity(intent);
                                     } else {

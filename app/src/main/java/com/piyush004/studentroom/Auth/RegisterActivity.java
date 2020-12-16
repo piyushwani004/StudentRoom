@@ -102,6 +102,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 databaseReference.child("Email").setValue(email);
 
                                 progressBar.setVisibility(View.GONE);
+                                finish();
                                 startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
                             }
                         }
