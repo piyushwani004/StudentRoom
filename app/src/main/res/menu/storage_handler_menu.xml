@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_RoomQuestion"
-        android:title="Question"
-        android:tooltipText="Upload Questions" />
-    <item
-        android:id="@+id/action_RoomAnswer"
-        android:title="Answer"
-        android:tooltipText="Upload Answer" />
+        android:id="@+id/actionUpload"
+        android:orderInCategory="1"
+        android:title="Upload"
+        app:showAsAction="always|withText">
 
+        <menu>
+            <item
+                android:id="@+id/action_RoomQuestion"
+                android:title="Upload Question"
+                android:tooltipText="Upload Questions" />
+            <item
+                android:id="@+id/action_RoomAnswer"
+                android:title="Upload Solution"
+                android:tooltipText="Upload Answer" />
+        </menu>
+
+    </item>
 
 </menu>

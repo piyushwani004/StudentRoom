@@ -99,7 +99,7 @@ public class RoomUsersFragment extends Fragment {
 
                 holder.setTxtEmail(model.getEmail());
 
-                holder.textViewEmail.setOnClickListener(new View.OnClickListener() {
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 

@@ -32,6 +32,7 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -70,6 +71,7 @@ public class RoomStorageHandler extends AppCompatActivity {
             R.anim.layout_animation_down_to_up,
             R.anim.layout_animation_left_to_right};
     int i = 0;
+    private MaterialCardView cardView;
 
 
     @RequiresApi(api = Build.VERSION_CODES.P)
@@ -83,6 +85,7 @@ public class RoomStorageHandler extends AppCompatActivity {
         textViewTopic = findViewById(R.id.textViewTopicTitle);
         recyclerViewSolution = findViewById(R.id.RoomStoHandRecyViewSolu);
         swipeRefreshLayout = findViewById(R.id.swipeRoomStorageHandler);
+        cardView = findViewById(R.id.cardViewRoomStorageHandler);
 
         recyclerViewSolution.setHasFixedSize(true);
         recyclerViewSolution.setLayoutManager(new LinearLayoutManager(this));
@@ -92,6 +95,7 @@ public class RoomStorageHandler extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,7 +151,7 @@ public class RoomStorageHandler extends AppCompatActivity {
                 holder.setTxtSolutionName("Solution");
                 holder.setTxtUploadedName(model.getURIName());
 
-                holder.title_SolutionName.setOnClickListener(new View.OnClickListener() {
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
@@ -159,7 +163,7 @@ public class RoomStorageHandler extends AppCompatActivity {
                     }
                 });
 
-                holder.title_SolutionName.setOnLongClickListener(new View.OnLongClickListener() {
+                holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
 
@@ -310,8 +314,8 @@ public class RoomStorageHandler extends AppCompatActivity {
                     FileName = FileName.replaceAll("[0123456789]", "");
 
                     textViewFileName.setText(FileName);
-
                     uploadQuestion();
+
 
                 }
                 break;
@@ -444,9 +448,10 @@ public class RoomStorageHandler extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String FirebaseFileName = snapshot.child("FileName").getValue(String.class);
                 final String FileURI = snapshot.child("Question").getValue(String.class);
+
                 textViewFileName.setText(FirebaseFileName);
 
-                textViewFileName.setOnClickListener(new View.OnClickListener() {
+                cardView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(v.getContext(), ViewPDF.class);

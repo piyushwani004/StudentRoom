@@ -155,7 +155,7 @@ public class SubjectTopicActivity extends AppCompatActivity {
                 holder.setTxtTopicName(model.getTopicName());
                 holder.setTxtSubjectName(URoom.RoomSubject);
 
-                holder.textViewTitle_Topic_Name.setOnClickListener(new View.OnClickListener() {
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
@@ -168,7 +168,7 @@ public class SubjectTopicActivity extends AppCompatActivity {
                 });
 
 
-                holder.textViewTitle_Topic_Name.setOnLongClickListener(new View.OnLongClickListener() {
+                holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
 

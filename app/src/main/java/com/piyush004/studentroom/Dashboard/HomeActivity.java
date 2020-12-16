@@ -1,6 +1,5 @@
 package com.piyush004.studentroom.Dashboard;
 
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -63,8 +62,7 @@ public class HomeActivity extends AppCompatActivity {
             R.anim.layout_animation_down_to_up,
             R.anim.layout_animation_left_to_right};
     int i = 0;
-
-    private String AdminEmail;
+    private AlertDialog.Builder builder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,7 +132,7 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         final DatabaseReference df = FirebaseDatabase.getInstance().getReference().child("Room");
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder = new AlertDialog.Builder(this);
 
         buttonCreateRoom.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -202,6 +200,7 @@ public class HomeActivity extends AppCompatActivity {
 
             }
         }).build();
+
         adapter = new FirebaseRecyclerAdapter<Model, Holder>(options) {
 
             @Override
@@ -209,7 +208,7 @@ public class HomeActivity extends AppCompatActivity {
 
                 holder.setTxtTitle(model.getName());
 
-                holder.textViewTitle.setOnClickListener(new View.OnClickListener() {
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
@@ -308,34 +307,131 @@ public class HomeActivity extends AppCompatActivity {
 
         MenuItem searchViewItem = menu.findItem(R.id.menuSearch);
 
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        //SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 
         final SearchView searchView = (SearchView) searchViewItem.getActionView();
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
 
         searchView.setQueryHint("Search Rooms...");
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        //searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
         searchView.setIconifiedByDefault(true);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-
+                onProcessSearch(query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-
-                //holder.getFilter().filter(newText);
-                System.out.println(newText);
+                onProcessSearch(newText);
                 return false;
             }
         });
 
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
+
+    private void onProcessSearch(String s) {
+
+        FirebaseRecyclerOptions<Model> options =
+                new FirebaseRecyclerOptions.Builder<Model>()
+                        .setQuery(FirebaseDatabase.getInstance().getReference().child("Room").orderByChild("RoomName").startAt(s).endAt(s + "\uf8ff"), new SnapshotParser<Model>() {
+
+                            @NonNull
+                            @Override
+                            public Model parseSnapshot(@NonNull DataSnapshot snapshot) {
+                                return new Model(
+
+                                        snapshot.child("RoomName").getValue(String.class),
+                                        snapshot.child("RoomPass").getValue(String.class)
+                                );
+
+                            }
+                        })
+                        .build();
+
+
+        adapter = new FirebaseRecyclerAdapter<Model, Holder>(options) {
+            @NonNull
+            @Override
+            public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.room_card, parent, false);
+
+                return new Holder(view);
+            }
+
+            @Override
+            protected void onBindViewHolder(@NonNull Holder holder, int position, @NonNull final Model model) {
+
+                holder.setTxtTitle(model.getName());
+
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        final String roompassword = model.getPassword();
+
+                        LayoutInflater inflater = getLayoutInflater();
+                        View dialogLayout = inflater.inflate(R.layout.room_password_dialog, null);
+                        final TextView roomName_d = dialogLayout.findViewById(R.id.textViewRoomId_d);
+                        final EditText roomPassword_d = dialogLayout.findViewById(R.id.editTextRoomPassword_d);
+
+                        roomName_d.setText(model.getName());
+                        builder.setTitle("Authentication");
+                        builder.setPositiveButton("Join", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                                String dPass = roomPassword_d.getText().toString();
+
+                                if (dPass.isEmpty()) {
+                                    roomPassword_d.setError("Please Enter Password");
+                                    roomPassword_d.requestFocus();
+                                } else if (!(dPass.isEmpty())) {
+                                    if (dPass.equals(roompassword)) {
+
+                                        System.out.println("Admin : " + URoom.RoomAdmin);
+
+//                                        Toast.makeText(getApplicationContext(), "Password Match", Toast.LENGTH_SHORT).show();
+                                        URoom.UserRoom = model.getName();
+                                        DatabaseReference dff = FirebaseDatabase.getInstance().getReference().child("ManagedRoom");
+                                        String EmailResult = emailSplit(firebaseAuth.getCurrentUser().getEmail());
+                                        dff.child(model.getName()).child("Users").child(EmailResult).setValue(firebaseAuth.getCurrentUser().getEmail());
+
+                                        Intent intent = new Intent(HomeActivity.this, RoomActivity.class);
+                                        startActivity(intent);
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "Password Does Not Match", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }
+                        });
+
+                        builder.setNegativeButton("Closed", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        });
+
+                        builder.setView(dialogLayout);
+                        builder.show();
+
+                    }
+                });
+
+
+            }
+        };
+
+        adapter.startListening();
+        recyclerView.setAdapter(adapter);
+
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -396,18 +492,6 @@ public class HomeActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         adapter.startListening();
-        runAnimationAgain();
-    }
-
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        runAnimationAgain();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
         runAnimationAgain();
     }
 

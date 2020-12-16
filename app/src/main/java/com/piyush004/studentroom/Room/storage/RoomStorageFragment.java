@@ -155,7 +155,7 @@ public class RoomStorageFragment extends Fragment {
                 holder.setTxtSubject(model.getSubject());
                 holder.setTxtRoomName(URoom.UserRoom);
 
-                holder.textViewSubject.setOnClickListener(new View.OnClickListener() {
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
@@ -167,7 +167,7 @@ public class RoomStorageFragment extends Fragment {
                     }
                 });
 
-                holder.textViewSubject.setOnLongClickListener(new View.OnLongClickListener() {
+                holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
                         URoom.RoomSubject = model.getSubject();

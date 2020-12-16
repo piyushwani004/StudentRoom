@@ -94,10 +94,9 @@ public class RoomActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
 
-            /*case R.id.action_RoomExit:
-                Intent intent = new Intent(RoomActivity.this, HomeActivity.class);
-                startActivity(intent);
-                break;*/
+            case R.id.action_RoomExit:
+                onRoomExit();
+                break;
 
             case R.id.action_RoomDelete:
                 onRoomDelete();
@@ -108,6 +107,44 @@ public class RoomActivity extends AppCompatActivity {
         return true;
     }
 
+
+    public void onRoomExit() {
+        URoom room = new URoom();
+        final DatabaseReference Exit = FirebaseDatabase.getInstance().getReference();
+        final String CurrentUser = URoom.UserEmail;
+        final String SplitEmail = room.emailSplit(CurrentUser);
+
+        builderDelete = new AlertDialog.Builder(RoomActivity.this);
+        builderDelete.setMessage("Do You Want To Exit Room ?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        Exit.child("ManagedRoom").child(URoom.UserRoom).child("Users").child(SplitEmail).removeValue();
+                        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                onBackPressed();
+                                finish();
+                            }
+                        });
+                        finish();
+                        startActivity(new Intent(RoomActivity.this, HomeActivity.class));
+                        Toast.makeText(RoomActivity.this, "Exit Room Successfully", Toast.LENGTH_LONG).show();
+
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builderDelete.create();
+        alert.setTitle("Room Exit Alert");
+        alert.show();
+
+
+    }
 
     public void onRoomDelete() {
         final DatabaseReference Delete = FirebaseDatabase.getInstance().getReference();

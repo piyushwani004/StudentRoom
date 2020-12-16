@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
                 if (firebaseAuth.getCurrentUser() != null) {
                     finish();
                     startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                    Toast.makeText(MainActivity.this, "Welcome " + firebaseAuth.getCurrentUser().getEmail(), Toast.LENGTH_LONG).show();
                 } else {
                     Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                     startActivity(intent);

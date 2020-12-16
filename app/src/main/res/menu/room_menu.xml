@@ -5,7 +5,17 @@
     <item
         android:id="@+id/action_RoomDelete"
         android:icon="@drawable/icon_delete_28"
+        android:orderInCategory="1"
+        android:title="Delete"
+        app:showAsAction="always" />
+
+
+    <item
+        android:id="@+id/action_RoomExit"
+        android:icon="@drawable/exit24"
+        android:orderInCategory="2"
         android:title="Exit"
         app:showAsAction="always" />
+
 
 </menu>
