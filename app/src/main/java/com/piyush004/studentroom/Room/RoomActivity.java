@@ -121,13 +121,6 @@ public class RoomActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int id) {
 
                         Exit.child("ManagedRoom").child(URoom.UserRoom).child("Users").child(SplitEmail).removeValue();
-                        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                onBackPressed();
-                                finish();
-                            }
-                        });
                         finish();
                         startActivity(new Intent(RoomActivity.this, HomeActivity.class));
                         Toast.makeText(RoomActivity.this, "Exit Room Successfully", Toast.LENGTH_LONG).show();
