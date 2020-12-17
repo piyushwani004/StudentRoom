@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -19,8 +18,10 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.piyush004.studentroom.R;
 import com.piyush004.studentroom.URoom;
 
@@ -43,6 +44,8 @@ public class RoomUsersFragment extends Fragment {
             R.anim.layout_animation_down_to_up,
             R.anim.layout_animation_left_to_right};
     int i = 0;
+    private String UserName;
+
 
     public RoomUsersFragment() {
         // Required empty public constructor
@@ -77,6 +80,8 @@ public class RoomUsersFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         System.out.println(URoom.UserRoom);
+
+        final URoom uRoom = new URoom();
         final DatabaseReference df = FirebaseDatabase.getInstance().getReference().child("ManagedRoom").child(URoom.UserRoom).child("Users");
 
         options = new FirebaseRecyclerOptions.Builder<UserModel>().setQuery(df, new SnapshotParser<UserModel>() {
@@ -95,17 +100,34 @@ public class RoomUsersFragment extends Fragment {
         adapter = new FirebaseRecyclerAdapter<UserModel, UserHolder>(options) {
 
             @Override
-            protected void onBindViewHolder(@NonNull UserHolder holder, int position, @NonNull final UserModel model) {
+            protected void onBindViewHolder(@NonNull final UserHolder holder, int position, @NonNull final UserModel model) {
 
                 holder.setTxtEmail(model.getEmail());
+                UserName = uRoom.emailSplit(model.getEmail());
+
+                DatabaseReference dfName = FirebaseDatabase.getInstance().getReference().child("AppUsers").child(UserName);
+                dfName.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                        holder.setTxtName(snapshot.child("Name").getValue(String.class));
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
 
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
 
-
                     }
                 });
+
 
             }
 
@@ -125,12 +147,12 @@ public class RoomUsersFragment extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                runAnimationAgain();
+                runAnimation();
                 final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if(swipeRefreshLayout.isRefreshing()) {
+                        if (swipeRefreshLayout.isRefreshing()) {
                             swipeRefreshLayout.setRefreshing(false);
                         }
                     }
@@ -143,7 +165,7 @@ public class RoomUsersFragment extends Fragment {
         return view;
     }
 
-    private void runAnimationAgain() {
+    private void runAnimation() {
         final LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(getContext(), animationList[i]);
         recyclerView.setLayoutAnimation(controller);
         adapter.notifyDataSetChanged();

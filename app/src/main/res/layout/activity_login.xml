@@ -46,7 +46,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-
         <EditText
             android:id="@+id/editTextEmail"
             android:layout_width="280dp"
@@ -56,7 +55,6 @@
             android:gravity="center"
             android:hint="Email"
             android:inputType="textPersonName" />
-
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/EditTextLayoutPassword_login"
@@ -82,6 +80,18 @@
                 android:inputType="textPassword" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/TextForgetPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:onClick="onClickForgotButton"
+            android:text="Forgot Password ?"
+            android:textAlignment="center"
+            android:textColor="@color/AppColor"
+            android:textSize="16dp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 

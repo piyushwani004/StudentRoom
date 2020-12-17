@@ -29,7 +29,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.piyush004.studentroom.R;
 import com.piyush004.studentroom.Room.storage.StorageHandler.RoomStorageHandler;
@@ -67,7 +66,7 @@ public class SubjectTopicActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        toolbar.setTitle(URoom.RoomSubject);
+        toolbar.setTitle(" " + URoom.RoomSubject + " Topics");
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -194,7 +193,7 @@ public class SubjectTopicActivity extends AppCompatActivity {
                                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                                 public void onClick(DialogInterface dialog, int id) {
 
-                                                   // Delete.child("ManagedRoom").child(URoom.UserRoom).child("Storage").child(URoom.RoomSubject).child(URoom.SubjectTopic);
+                                                    // Delete.child("ManagedRoom").child(URoom.UserRoom).child("Storage").child(URoom.RoomSubject).child(URoom.SubjectTopic);
 
                                                     Delete.child("ManagedRoom").child(URoom.UserRoom).child("Topics").child(URoom.RoomSubject).child(URoom.SubjectTopic).removeValue();
                                                     adapter.notifyDataSetChanged();

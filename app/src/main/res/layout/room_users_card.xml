@@ -8,23 +8,50 @@
     app:cardElevation="1dp"
     app:cardUseCompatPadding="true">
 
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:padding="10dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imageViewUser"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="2dp"
+            android:src="@drawable/ic_baseline_account_circle_24"
+            app:civ_border_color="#FF000000"
+            app:civ_border_width="2dp">
+
+        </de.hdodenhof.circleimageview.CircleImageView>
+
+        <TextView
+            android:id="@+id/title_card_Name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_toEndOf="@id/imageViewUser"
+            android:layout_toRightOf="@+id/imageViewUser"
+            android:text="User Name"
+            android:textColor="#6E6D6D"
+            android:textSize="18dp"
+            android:textStyle="bold|italic" />
 
         <TextView
             android:id="@+id/title_card_Email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/title_card_Name"
             android:layout_marginStart="20dp"
             android:layout_marginLeft="20dp"
-            android:text="User Emails"
+            android:layout_marginTop="5dp"
+            android:layout_toEndOf="@id/imageViewUser"
+            android:layout_toRightOf="@+id/imageViewUser"
+            android:text="User Email"
             android:textColor="#6E6D6D"
             android:textSize="18dp"
-            android:textStyle="bold|italic" />
+            android:textStyle="italic" />
+
 
     </RelativeLayout>
 
