@@ -1,6 +1,7 @@
 package com.piyush004.studentroom.Room.storage;
 
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,15 +14,18 @@ public class StorageHolder extends RecyclerView.ViewHolder {
 
     public TextView textViewSubject, textViewRoomName;
     public TextView title_SolutionName, UploadedName;
+    public ImageView ImageView , imageViewSol;
 
     public StorageHolder(@NonNull View itemView) {
         super(itemView);
 
         this.textViewSubject = itemView.findViewById(R.id.title_Subject_Name);
         this.textViewRoomName = itemView.findViewById(R.id.Room_Name);
+        this.ImageView = itemView.findViewById(R.id.imageViewRoom);
 
         this.title_SolutionName = itemView.findViewById(R.id.title_SolutionName);
         this.UploadedName = itemView.findViewById(R.id.UploadedName);
+        this.imageViewSol = itemView.findViewById(R.id.imageViewRoom);
     }
 
     public void setTxtSubject(String string) {

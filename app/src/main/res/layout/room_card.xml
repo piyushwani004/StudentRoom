@@ -11,16 +11,24 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/imageViewRoom"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/tletterimg" />
+
 
         <TextView
             android:id="@+id/title_card"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginLeft="20dp"
+            android:layout_toEndOf="@id/imageViewRoom"
+            android:layout_toRightOf="@+id/imageViewRoom"
             android:text="Title"
+            android:textAlignment="center"
             android:textColor="#6E6D6D"
             android:textSize="22dp"
             android:textStyle="bold|italic" />

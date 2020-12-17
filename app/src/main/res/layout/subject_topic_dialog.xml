@@ -7,10 +7,11 @@
     <EditText
         android:id="@+id/editTextSubjectTopic"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/plaintext_bg"
         android:ems="10"
+        android:textAlignment="center"
         android:hint="Topic Name"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="@+id/textViewSubject_Name_Topic"

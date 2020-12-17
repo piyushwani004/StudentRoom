@@ -21,6 +21,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
@@ -165,6 +167,22 @@ public class SubjectTopicActivity extends AppCompatActivity {
 
                     }
                 });
+
+                String s = model.getTopicName();
+                String ch = Character.toString(s.charAt(0));
+                ColorGenerator generator = ColorGenerator.MATERIAL;
+                final int color1 = generator.getRandomColor();
+                TextDrawable drawable = TextDrawable.builder()
+                        .beginConfig()
+                        .withBorder(2)
+                        .bold()
+                        .width(60)
+                        .height(60)
+                        .toUpperCase()
+                        .endConfig()
+                        .buildRoundRect(ch.toUpperCase(), color1, 100);
+
+                holder.circleImageView.setImageDrawable(drawable);
 
 
                 holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {

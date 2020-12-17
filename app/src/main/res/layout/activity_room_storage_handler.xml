@@ -37,14 +37,11 @@
             android:layout_height="wrap_content"
             android:padding="5dp">
 
-            <de.hdodenhof.circleimageview.CircleImageView
+            <ImageView
                 android:id="@+id/imageViewQuestion"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:layout_marginTop="10dp"
-                android:src="@drawable/documents"
-                app:civ_border_color="#FF000000"
-                app:civ_border_width="2dp" />
+                android:src="@drawable/documents" />
 
             <TextView
                 android:id="@+id/title_File_Name"

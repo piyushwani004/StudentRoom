@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
@@ -77,9 +79,11 @@ public class RoomUsersFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_room_users, container, false);
         swipeRefreshLayout = view.findViewById(R.id.swipe);
         recyclerView = (RecyclerView) view.findViewById(R.id.RecycleViewRoomUsers);
+
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         System.out.println(URoom.UserRoom);
+
 
         final URoom uRoom = new URoom();
         final DatabaseReference df = FirebaseDatabase.getInstance().getReference().child("ManagedRoom").child(URoom.UserRoom).child("Users");
@@ -110,7 +114,23 @@ public class RoomUsersFragment extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                        holder.setTxtName(snapshot.child("Name").getValue(String.class));
+                        String Name = snapshot.child("Name").getValue(String.class);
+                        holder.setTxtName(Name);
+                        String ch = Character.toString(Name.charAt(0));
+                        System.out.println(ch);
+                        ColorGenerator generator = ColorGenerator.MATERIAL;
+                        final int color1 = generator.getRandomColor();
+                        TextDrawable drawable = TextDrawable.builder()
+                                .beginConfig()
+                                .withBorder(2)
+                                .bold()
+                                .width(60)
+                                .height(60)
+                                .toUpperCase()
+                                .endConfig()
+                                .buildRoundRect(ch, color1, 50);
+
+                        holder.imageView.setImageDrawable(drawable);
 
                     }
 

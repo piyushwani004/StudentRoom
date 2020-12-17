@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +28,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
@@ -65,6 +68,7 @@ public class RoomStorageHandler extends AppCompatActivity {
     private String FileName;
     private AlertDialog.Builder builderDelete;
     private String RoomAdminEmail;
+    private ImageView imageView;
     private SwipeRefreshLayout swipeRefreshLayout;
     int[] animationList = {R.anim.layout_animation_up_to_down,
             R.anim.layout_animation_right_to_left,
@@ -86,6 +90,8 @@ public class RoomStorageHandler extends AppCompatActivity {
         recyclerViewSolution = findViewById(R.id.RoomStoHandRecyViewSolu);
         swipeRefreshLayout = findViewById(R.id.swipeRoomStorageHandler);
         cardView = findViewById(R.id.cardViewRoomStorageHandler);
+        imageView = findViewById(R.id.imageViewQuestion);
+
 
         recyclerViewSolution.setHasFixedSize(true);
         recyclerViewSolution.setLayoutManager(new LinearLayoutManager(this));
@@ -162,6 +168,21 @@ public class RoomStorageHandler extends AppCompatActivity {
                         startActivity(intent);
                     }
                 });
+
+                ColorGenerator generator = ColorGenerator.MATERIAL;
+                final int color1 = generator.getRandomColor();
+                TextDrawable drawable = TextDrawable.builder()
+                        .beginConfig()
+                        .withBorder(2)
+                        .bold()
+                        .width(60)
+                        .height(60)
+                        .toUpperCase()
+                        .endConfig()
+                        .buildRoundRect("S", color1, 100);
+
+                holder.imageViewSol.setImageDrawable(drawable);
+
 
                 holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
@@ -450,6 +471,21 @@ public class RoomStorageHandler extends AppCompatActivity {
                 final String FileURI = snapshot.child("Question").getValue(String.class);
 
                 textViewFileName.setText(FirebaseFileName);
+
+                ColorGenerator generator = ColorGenerator.MATERIAL;
+                final int color1 = generator.getRandomColor();
+                TextDrawable drawable = TextDrawable.builder()
+                        .beginConfig()
+                        .withBorder(2)
+                        .bold()
+                        .width(60)
+                        .height(60)
+                        .toUpperCase()
+                        .endConfig()
+                        .buildRoundRect("Q", color1, 100);
+
+                imageView.setImageDrawable(drawable);
+
 
                 cardView.setOnClickListener(new View.OnClickListener() {
                     @Override

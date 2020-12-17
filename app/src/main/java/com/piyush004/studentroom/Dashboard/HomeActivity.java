@@ -31,6 +31,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.amulyakhare.textdrawable.TextDrawable;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
@@ -207,6 +209,24 @@ public class HomeActivity extends AppCompatActivity {
             protected void onBindViewHolder(@NonNull Holder holder, int position, @NonNull final Model model) {
 
                 holder.setTxtTitle(model.getName());
+
+
+                String s = model.getName();
+                String ch = Character.toString(s.charAt(0));
+                ColorGenerator generator = ColorGenerator.MATERIAL;
+                final int color1 = generator.getRandomColor();
+                TextDrawable drawable = TextDrawable.builder()
+                        .beginConfig()
+                        .withBorder(2)
+                        .bold()
+                        .width(50)
+                        .height(50)
+                        .toUpperCase()
+                        .endConfig()
+                        .buildRoundRect(ch, color1, 100);
+
+                holder.imageView.setImageDrawable(drawable);
+
 
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
